@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head><title>Wards</title></head>
+<body>
+<section layout:fragment="content">
+  <div class="hms-card">
+    <h1>Wards</h1>
+    <table class="hms-table" th:if="${!wards.isEmpty()}">
+      <thead><tr><th>Name</th><th>Bed type</th></tr></thead>
+      <tbody>
+      <tr th:each="w : ${wards}">
+        <td th:text="${w.name}">—</td>
+        <td th:text="${w.bedType}">—</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</body>
+</html>

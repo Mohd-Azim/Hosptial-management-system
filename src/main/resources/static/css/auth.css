@@ -1,0 +1,586 @@
+/* Premium healthcare authentication screens */
+
+.hms-auth-body {
+  --auth-primary: #0ea5e9;
+  --auth-primary-deep: #0369a1;
+  --auth-primary-soft: #e0f2fe;
+  --auth-trust-blue: #075985;
+  --auth-green: #10b981;
+  --auth-green-soft: #dcfce7;
+  --auth-text: #0f172a;
+  --auth-muted: #64748b;
+  --auth-border: #dbeafe;
+  --auth-danger: #dc2626;
+  --auth-shadow: 0 28px 80px rgba(2, 132, 199, 0.16);
+  --auth-shadow-soft: 0 18px 48px rgba(15, 23, 42, 0.08);
+
+  display: block;
+  min-height: 100vh;
+  padding: 0;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(125, 211, 252, 0.42), transparent 30rem),
+    radial-gradient(circle at 92% 16%, rgba(187, 247, 208, 0.48), transparent 32rem),
+    linear-gradient(135deg, #ffffff 0%, #f0f9ff 48%, #ffffff 100%);
+  color: var(--auth-text);
+  font-family: "Roboto", system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+.hms-auth-shell {
+  display: grid;
+  grid-template-columns: minmax(360px, 0.95fr) minmax(420px, 1.05fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: center;
+  width: min(1180px, calc(100% - 2rem));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.hms-auth-shell--register {
+  width: min(1260px, calc(100% - 2rem));
+  grid-template-columns: minmax(360px, 0.88fr) minmax(520px, 1.12fr);
+}
+
+.hms-auth-visual,
+.hms-auth-panel {
+  animation: authFadeSlide 0.65s ease both;
+}
+
+.hms-auth-panel {
+  animation-delay: 0.08s;
+}
+
+@keyframes authFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hms-auth-visual-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.hms-auth-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: fit-content;
+  color: var(--auth-trust-blue);
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.hms-auth-brand:hover {
+  color: var(--auth-primary-deep);
+  text-decoration: none;
+}
+
+.hms-auth-brand .material-symbols-outlined {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--auth-primary), #38bdf8);
+  color: #ffffff;
+  box-shadow: 0 14px 30px rgba(14, 165, 233, 0.28);
+  font-variation-settings: "FILL" 1;
+}
+
+.hms-auth-photo-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 420px;
+  border: 10px solid rgba(255, 255, 255, 0.82);
+  border-radius: 36px;
+  background: #e0f2fe;
+  box-shadow: var(--auth-shadow);
+}
+
+.hms-auth-photo-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(7, 89, 133, 0.02), rgba(7, 89, 133, 0.55)),
+    linear-gradient(90deg, rgba(14, 165, 233, 0.2), transparent 62%);
+}
+
+.hms-auth-photo-card img {
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.02);
+  animation: authImageBreath 7s ease-in-out infinite alternate;
+}
+
+@keyframes authImageBreath {
+  from {
+    transform: scale(1.02);
+  }
+  to {
+    transform: scale(1.075);
+  }
+}
+
+.hms-auth-photo-badge {
+  position: absolute;
+  left: 1.1rem;
+  right: 1.1rem;
+  bottom: 1.1rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.76);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--auth-trust-blue);
+  font-weight: 800;
+  box-shadow: 0 16px 42px rgba(15, 23, 42, 0.16);
+  backdrop-filter: blur(16px);
+}
+
+.hms-auth-photo-badge .material-symbols-outlined {
+  color: var(--auth-green);
+  font-variation-settings: "FILL" 1;
+}
+
+.hms-auth-visual-copy {
+  padding: 0.5rem 0.25rem 0;
+}
+
+.hms-auth-eyebrow,
+.hms-auth-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: fit-content;
+  padding: 0.45rem 0.78rem;
+  border: 1px solid rgba(14, 165, 233, 0.18);
+  border-radius: 999px;
+  background: rgba(240, 249, 255, 0.92);
+  color: var(--auth-primary-deep);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hms-auth-visual-copy h1 {
+  max-width: 620px;
+  margin: 0.9rem 0 0;
+  color: var(--auth-text);
+  font-size: clamp(2rem, 4vw, 3.9rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.06em;
+}
+
+.hms-auth-visual-copy p {
+  max-width: 560px;
+  margin: 1rem 0 0;
+  color: var(--auth-muted);
+  font-size: 1.06rem;
+  line-height: 1.75;
+}
+
+.hms-auth-trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.hms-auth-trust-strip span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0.52rem 0.78rem;
+  border: 1px solid rgba(219, 234, 254, 0.9);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.84);
+  color: #475569;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.05);
+}
+
+.hms-auth-trust-strip strong {
+  margin-right: 0.24rem;
+  color: var(--auth-primary-deep);
+}
+
+.hms-auth-panel {
+  display: flex;
+  justify-content: center;
+}
+
+.hms-auth-card-premium.hms-card {
+  width: 100%;
+  max-width: 480px;
+  padding: clamp(1.4rem, 3vw, 2.2rem);
+  border: 1px solid rgba(219, 234, 254, 0.9);
+  border-radius: 34px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.88)),
+    radial-gradient(circle at 10% 0%, rgba(224, 242, 254, 0.85), transparent 18rem);
+  color: var(--auth-text);
+  box-shadow: var(--auth-shadow);
+  backdrop-filter: blur(18px);
+}
+
+.hms-auth-card--wide.hms-auth-card-premium {
+  max-width: 680px;
+}
+
+.hms-auth-logo {
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+}
+
+.hms-auth-logo .material-symbols-outlined {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--auth-primary), #38bdf8);
+  color: #ffffff;
+  font-size: 32px;
+  box-shadow: 0 16px 34px rgba(14, 165, 233, 0.26);
+  font-variation-settings: "FILL" 1;
+}
+
+.hms-auth-heading {
+  margin-bottom: 1.35rem;
+}
+
+.hms-auth-heading h2 {
+  margin: 0.8rem 0 0;
+  color: var(--auth-text);
+  font-size: clamp(1.9rem, 3vw, 2.55rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+.hms-auth-heading p {
+  margin: 0.55rem 0 0;
+  color: var(--auth-muted);
+  font-size: 1rem;
+}
+
+.hms-auth-chip .material-symbols-outlined {
+  color: var(--auth-green);
+  font-size: 1rem;
+  font-variation-settings: "FILL" 1;
+}
+
+.hms-auth-alert {
+  margin: 0 0 1rem;
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: 18px;
+  background: #fef2f2;
+  color: var(--auth-danger);
+}
+
+.hms-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.hms-auth-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.hms-auth-field--full {
+  grid-column: 1 / -1;
+}
+
+.hms-auth-field label,
+.hms-form .hms-auth-field label {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: #334155;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.hms-auth-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.hms-auth-soft-link,
+.hms-auth-footer-link a {
+  color: var(--auth-primary-deep);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.hms-auth-soft-link:hover,
+.hms-auth-footer-link a:hover {
+  color: var(--auth-trust-blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.hms-auth-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hms-auth-input-wrap > .material-symbols-outlined {
+  position: absolute;
+  left: 1rem;
+  z-index: 1;
+  color: #7dd3fc;
+  font-size: 1.28rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.hms-form .hms-auth-input-wrap input {
+  width: 100%;
+  max-width: none;
+  min-height: 54px;
+  margin: 0;
+  padding: 0.9rem 3.2rem 0.9rem 3rem;
+  border: 1px solid rgba(186, 230, 253, 0.95);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--auth-text);
+  font: inherit;
+  font-weight: 600;
+  outline: none;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.hms-form .hms-auth-input-wrap input::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.hms-form .hms-auth-input-wrap input:hover {
+  border-color: rgba(14, 165, 233, 0.48);
+}
+
+.hms-form .hms-auth-input-wrap input:focus {
+  border-color: var(--auth-primary);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.14), 0 14px 32px rgba(14, 165, 233, 0.08);
+}
+
+.hms-auth-input-wrap:focus-within > .material-symbols-outlined {
+  color: var(--auth-primary);
+  transform: scale(1.04);
+}
+
+.hms-auth-password-toggle {
+  position: absolute;
+  right: 0.45rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--auth-muted);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.hms-auth-password-toggle:hover,
+.hms-auth-password-toggle:focus-visible {
+  background: var(--auth-primary-soft);
+  color: var(--auth-primary-deep);
+  outline: none;
+}
+
+.hms-auth-security-note {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid rgba(187, 247, 208, 0.8);
+  border-radius: 18px;
+  background: rgba(236, 253, 245, 0.86);
+  color: #047857;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.hms-auth-security-note .material-symbols-outlined {
+  color: var(--auth-green);
+  font-size: 1.2rem;
+  font-variation-settings: "FILL" 1;
+}
+
+.hms-auth-strength {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.55rem;
+}
+
+.hms-auth-strength-bar {
+  display: block;
+  overflow: hidden;
+  height: 8px;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.hms-auth-strength-bar span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: #94a3b8;
+  transition: width 0.25s ease, background 0.25s ease;
+}
+
+.hms-auth-strength small {
+  color: var(--auth-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.hms-auth-submit.hms-btn {
+  position: relative;
+  width: 100%;
+  min-height: 54px;
+  margin-top: 0.15rem;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--auth-primary), #0284c7);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 900;
+  box-shadow: 0 16px 34px rgba(14, 165, 233, 0.28);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.hms-auth-submit.hms-btn:hover {
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 20px 44px rgba(14, 165, 233, 0.34);
+  filter: none;
+}
+
+.hms-auth-submit:disabled {
+  cursor: wait;
+  opacity: 0.8;
+  transform: none;
+}
+
+.hms-auth-spinner {
+  display: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+  border-radius: 999px;
+  animation: authSpin 0.7s linear infinite;
+}
+
+.hms-auth-submit.is-loading .hms-auth-spinner {
+  display: inline-flex;
+}
+
+@keyframes authSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.hms-auth-footer-link {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 1.25rem;
+  color: var(--auth-muted);
+  font-size: 0.92rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .hms-auth-shell,
+  .hms-auth-shell--register {
+    grid-template-columns: 1fr;
+    width: min(760px, calc(100% - 2rem));
+    padding: 1.5rem 0;
+  }
+
+  .hms-auth-photo-card {
+    min-height: 320px;
+  }
+
+  .hms-auth-photo-card img {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hms-auth-shell,
+  .hms-auth-shell--register {
+    width: min(100% - 1rem, 620px);
+    gap: 1rem;
+  }
+
+  .hms-auth-visual-copy h1 {
+    font-size: 2rem;
+  }
+
+  .hms-auth-photo-card,
+  .hms-auth-photo-card img {
+    min-height: 250px;
+    border-radius: 26px;
+  }
+
+  .hms-auth-card-premium.hms-card {
+    border-radius: 26px;
+  }
+
+  .hms-auth-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hms-auth-label-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+}

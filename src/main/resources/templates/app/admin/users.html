@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head><title>Users</title></head>
+<body>
+<section layout:fragment="content">
+  <div class="hms-card">
+    <h1>Users</h1>
+    <label class="hms-field-label" for="users-filter">Search</label>
+    <input type="search" id="users-filter" class="hms-input-search" placeholder="Username, name, id…" autocomplete="off"/>
+
+    <table class="hms-table hms-table-filterable" id="users-table" th:if="${!users.isEmpty()}">
+      <thead><tr><th>ID</th><th>Username</th><th>Name</th><th>Active</th><th>Suspended</th></tr></thead>
+      <tbody>
+      <tr th:each="u : ${users}"
+          th:attr="data-search=${#strings.toLowerCase(u.id + ' ' + u.username + ' ' + u.fullName)}">
+        <td th:text="${u.id}">—</td>
+        <td th:text="${u.username}">—</td>
+        <td th:text="${u.fullName}">—</td>
+        <td th:text="${u.active}">—</td>
+        <td th:text="${u.suspended}">—</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.HMS && HMS.bindTableFilter) {
+        HMS.bindTableFilter('#users-filter', '#users-table', 'data-search');
+      }
+    });
+  </script>
+</section>
+</body>
+</html>

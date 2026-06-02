@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head><title>My care</title></head>
+<body>
+<section layout:fragment="content">
+  <div class="hms-card">
+    <h1>Patient portal</h1>
+    <p class="hms-muted" th:if="${mrn != null}">MRN: <strong th:text="${mrn}">—</strong></p>
+
+    <h2 style="font-size:1rem;margin:1.25rem 0 0.5rem;">Book appointment</h2>
+    <p class="hms-muted">Times are interpreted in Asia/Kolkata. Zero fee confirms immediately.</p>
+    <form class="hms-form" th:action="@{/app/patient/home/book}" method="post" style="max-width:420px;">
+      <label>Date &amp; time
+        <input type="datetime-local" name="scheduledAtLocal" required/>
+      </label>
+      <label>Consultation fee
+        <input type="text" name="consultationFee" value="0" placeholder="0 for free slot"/>
+      </label>
+      <label>Notes (optional)
+        <input type="text" name="notes" placeholder="Reason for visit"/>
+      </label>
+      <button type="submit" class="hms-btn">Request booking</button>
+    </form>
+
+    <h2 style="font-size:1rem;margin:1.25rem 0 0.5rem;">Appointments</h2>
+    <table class="hms-table" th:if="${!appointments.isEmpty()}">
+      <thead><tr><th>When</th><th>Status</th><th>Channel</th><th></th></tr></thead>
+      <tbody>
+      <tr th:each="a : ${appointments}">
+        <td th:text="${#temporals.format(a.scheduledAt, 'yyyy-MM-dd HH:mm')}">—</td>
+        <td th:text="${a.status}">—</td>
+        <td th:text="${a.bookingChannel}">—</td>
+        <td>
+          <form th:if="${a.status == T(com.hospital.hms.domain.enums.AppointmentStatus).PENDING_PAYMENT}"
+                th:action="@{/app/patient/home/pay-appointment}" method="post" style="display:inline;">
+            <input type="hidden" name="appointmentId" th:value="${a.id}"/>
+            <button type="submit" class="hms-btn hms-btn-ghost" style="padding:0.35rem 0.75rem;font-size:0.8125rem;">Pay fee</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <p class="hms-muted" th:if="${appointments.isEmpty()}">No appointments yet.</p>
+
+    <h2 style="font-size:1rem;margin:1.25rem 0 0.5rem;">Bills</h2>
+    <table class="hms-table" th:if="${!bills.isEmpty()}">
+      <thead><tr><th>Ref</th><th>Total</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+      <tr th:each="b : ${bills}">
+        <td th:text="${b.referenceType + ' #' + b.referenceId}">—</td>
+        <td th:text="${b.totalAmount}">—</td>
+        <td th:text="${b.status}">—</td>
+        <td>
+          <form th:if="${b.status == T(com.hospital.hms.domain.enums.BillStatus).OPEN}"
+                th:action="@{/app/patient/home/pay-bill}" method="post" style="display:inline;">
+            <input type="hidden" name="billId" th:value="${b.id}"/>
+            <button type="submit" class="hms-btn hms-btn-ghost" style="padding:0.35rem 0.75rem;font-size:0.8125rem;">Pay</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <p class="hms-muted" th:if="${bills.isEmpty()}">No bills.</p>
+
+    <h2 style="font-size:1rem;margin:1.25rem 0 0.5rem;">Prescriptions</h2>
+    <table class="hms-table" th:if="${!prescriptions.isEmpty()}">
+      <thead><tr><th>ID</th><th>Pharmacy opt-in</th></tr></thead>
+      <tbody>
+      <tr th:each="rx : ${prescriptions}">
+        <td th:text="${rx.id}">—</td>
+        <td th:text="${rx.pharmacyOptIn}">—</td>
+      </tr>
+      </tbody>
+    </table>
+    <p class="hms-muted" th:if="${prescriptions.isEmpty()}">No prescriptions.</p>
+  </div>
+</section>
+</body>
+</html>

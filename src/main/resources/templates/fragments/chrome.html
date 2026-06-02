@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+  <header class="hms-top" th:fragment="header">
+    <div class="hms-brand-wrap">
+      <button type="button" class="hms-shell-toggle" data-sidebar-toggle aria-label="Collapse sidebar">
+        <span class="material-symbols-outlined" aria-hidden="true">menu_open</span>
+      </button>
+      <div class="hms-brand">
+        <span class="material-symbols-outlined hms-brand-icon" aria-hidden="true">local_hospital</span>
+        HMS <span>Hospital management</span>
+      </div>
+      <div class="hms-module-title" data-module-title>Hospital operations</div>
+    </div>
+
+    <form class="hms-global-search" data-global-search-form role="search">
+      <span class="material-symbols-outlined" aria-hidden="true">search</span>
+      <input type="search" data-global-search-input placeholder="Search patient, doctor, appointment, token, bill"/>
+      <button type="submit">Search</button>
+    </form>
+
+    <div class="hms-top-actions">
+      <button type="button" class="hms-icon-btn" data-header-notifications aria-label="Open notifications">
+        <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
+        <span th:if="${notificationCount != null and notificationCount > 0}" class="hms-badge" title="Notifications in inbox"
+              th:text="${notificationCount}">0</span>
+      </button>
+      <div class="hms-profile-menu">
+        <button type="button" class="hms-profile-trigger" data-profile-toggle aria-label="Open profile menu">
+          <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
+          <span class="hms-user" th:if="${userFullName != null}" th:text="${userFullName + ' · ' + principal.username}">User</span>
+        </button>
+        <div class="hms-profile-dropdown" data-profile-dropdown>
+          <strong th:if="${userFullName != null}" th:text="${userFullName}">Receptionist</strong>
+          <span th:if="${principal != null}" th:text="${principal.username}">username</span>
+          <button type="button" data-scroll-target="#appointments">Appointment desk</button>
+        </div>
+      </div>
+      <form th:action="@{/logout}" method="post" style="margin:0;">
+        <button type="submit" class="hms-btn hms-btn-ghost" style="padding:0.4rem 1rem;font-size:0.8125rem;">Log out</button>
+      </form>
+    </div>
+  </header>
+
+  <aside class="hms-nav" th:fragment="nav">
+    <div class="hms-nav-title">
+      <span class="material-symbols-outlined" aria-hidden="true">support_agent</span>
+      <strong>Workspace</strong>
+    </div>
+    <nav>
+      <h3>General</h3>
+      <a th:href="@{/app/dashboard}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">dashboard</span>Dashboard</a>
+
+      <th:block th:if="${navPatient}">
+        <h3>Patient</h3>
+        <a th:href="@{/app/patient/home}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">person</span>My care</a>
+      </th:block>
+
+      <th:block th:if="${navReception}">
+        <h3>Reception</h3>
+        <a th:href="@{/app/reception/desk} + '#reception-dashboard'"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">dashboard</span><span class="hms-nav-label">Dashboard</span></a>
+        <a th:href="@{/app/reception/desk} + '#appointments'"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">event_available</span><span class="hms-nav-label">Appointment Management</span></a>
+        <a th:href="@{/app/reception/desk} + '#book-appointment'"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">add_circle</span><span class="hms-nav-label">Book Appointment</span></a>
+        <a th:href="@{/app/reception/desk} + '#doctor-schedule'"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">stethoscope</span><span class="hms-nav-label">Doctor Schedule</span></a>
+        <a th:href="@{/app/reception/desk} + '#patient-history'"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">clinical_notes</span><span class="hms-nav-label">Patient History</span></a>
+        <a th:href="@{/app/reception/desk} + '#billing'"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">payments</span><span class="hms-nav-label">Billing Support</span></a>
+        <a th:href="@{/app/reception/desk} + '#doctor-unavailable'"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">event_busy</span><span class="hms-nav-label">Unavailable Doctors</span></a>
+      </th:block>
+
+      <th:block th:if="${navClinical}">
+        <h3>Clinical</h3>
+        <a th:href="@{/app/clinical/today}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">medical_services</span><span class="hms-nav-label">Today's appointments</span></a>
+      </th:block>
+
+      <th:block th:if="${navPharmacy}">
+        <h3>Pharmacy</h3>
+        <a th:href="@{/app/pharmacy/pending}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">local_pharmacy</span><span class="hms-nav-label">Dispensing queue</span></a>
+      </th:block>
+
+      <th:block th:if="${navFacility}">
+        <h3>Beds</h3>
+        <a th:href="@{/app/facility/wards}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">hotel</span><span class="hms-nav-label">Wards &amp; beds</span></a>
+      </th:block>
+
+      <th:block th:if="${navHrStaff}">
+        <h3>People</h3>
+        <a th:href="@{/app/hr/me}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">schedule</span><span class="hms-nav-label">My attendance</span></a>
+      </th:block>
+
+      <th:block th:if="${navHr}">
+        <h3>HR</h3>
+        <a th:href="@{/app/hr/roster}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">calendar_month</span><span class="hms-nav-label">Daily roster</span></a>
+        <a th:href="@{/app/hr/payroll}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">payments</span><span class="hms-nav-label">Payroll</span></a>
+      </th:block>
+
+      <th:block th:if="${navProcurement}">
+        <h3>Procurement</h3>
+        <a th:href="@{/app/procurement/vendors}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">inventory_2</span><span class="hms-nav-label">Suppliers / vendors</span></a>
+      </th:block>
+
+      <th:block th:if="${navFinance}">
+        <h3>Finance</h3>
+        <a th:href="@{/app/finance/misc}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">account_balance</span><span class="hms-nav-label">Miscellaneous expenses</span></a>
+      </th:block>
+
+      <th:block th:if="${navCompliance}">
+        <h3>Compliance</h3>
+        <a th:href="@{/app/compliance/waste}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">recycling</span><span class="hms-nav-label">Bio-medical waste log</span></a>
+      </th:block>
+
+      <th:block th:if="${navAdmin}">
+        <h3>Administration</h3>
+        <a th:href="@{/app/admin/users}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">admin_panel_settings</span><span class="hms-nav-label">Users</span></a>
+      </th:block>
+    </nav>
+  </aside>
+</body>
+</html>

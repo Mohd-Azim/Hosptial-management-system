@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head><title>Waste log</title></head>
+<body>
+<section layout:fragment="content">
+  <div class="hms-card">
+    <h1>Bio-medical waste logs</h1>
+    <table class="hms-table" th:if="${!logs.isEmpty()}">
+      <thead><tr><th>Category</th><th>Qty</th><th>Recorded</th></tr></thead>
+      <tbody>
+      <tr th:each="w : ${logs}">
+        <td th:text="${w.categoryCode}">—</td>
+        <td th:text="${w.quantityValue + ' ' + w.quantityUnit}">—</td>
+        <td th:text="${#temporals.format(w.recordedAt, 'yyyy-MM-dd HH:mm')}">—</td>
+      </tr>
+      </tbody>
+    </table>
+    <p class="hms-muted" th:if="${logs.isEmpty()}">No waste entries.</p>
+  </div>
+</section>
+</body>
+</html>

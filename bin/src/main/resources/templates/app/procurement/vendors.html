@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head><title>Vendors</title></head>
+<body>
+<section layout:fragment="content">
+  <div class="hms-card">
+    <h1>Suppliers &amp; vendors</h1>
+    <label class="hms-field-label" for="vendor-filter">Search</label>
+    <input type="search" id="vendor-filter" class="hms-input-search" placeholder="Name, GSTIN, type…" autocomplete="off"/>
+    <table class="hms-table hms-table-filterable" id="vendor-table" th:if="${!vendors.isEmpty()}">
+      <thead><tr><th>Name</th><th>Type</th><th>GSTIN</th><th>Active</th></tr></thead>
+      <tbody>
+      <tr th:each="v : ${vendors}"
+          th:attr="data-search=${#strings.toLowerCase(v.legalName + ' ' + v.partyType + ' ' + (v.gstin != null ? v.gstin : '') + ' ' + v.active)}">
+        <td th:text="${v.legalName}">—</td>
+        <td th:text="${v.partyType}">—</td>
+        <td th:text="${v.gstin != null ? v.gstin : '—'}">—</td>
+        <td th:text="${v.active}">—</td>
+      </tr>
+      </tbody>
+    </table>
+    <p class="hms-muted" th:if="${vendors.isEmpty()}">No vendors.</p>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.HMS && HMS.bindTableFilter) {
+        HMS.bindTableFilter('#vendor-filter', '#vendor-table', 'data-search');
+      }
+    });
+  </script>
+</section>
+</body>
+</html>

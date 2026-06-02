@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head><title>Front desk</title></head>
+<body>
+<section layout:fragment="content">
+  <div class="hms-card">
+    <h1>Reception — front desk</h1>
+    <p class="hms-muted">Patient prefix search uses Redis → DB (debounced). Book on behalf of a patient; times use Asia/Kolkata.</p>
+
+    <h2 style="font-size:1rem;margin:1.25rem 0 0.5rem;">Book for patient</h2>
+    <form class="hms-form" th:action="@{/app/reception/desk/book}" method="post" style="max-width:480px;">
+      <label>Patient
+        <select name="patientUserId" required>
+          <option value="" disabled selected>Select MRN…</option>
+          <option th:each="p : ${profiles}" th:value="${p.user.id}"
+                  th:text="${p.mrn + ' — ' + p.user.fullName + ' (id ' + p.user.id + ')'}">Patient</option>
+        </select>
+      </label>
+      <label>Channel
+        <select name="bookingChannel" required>
+          <option th:each="c : ${channels}" th:value="${c.name()}" th:text="${c.name()}">WALK_IN</option>
+        </select>
+      </label>
+      <label>Date &amp; time
+        <input type="datetime-local" name="scheduledAtLocal" required/>
+      </label>
+      <label>Consultation fee
+        <input type="text" name="consultationFee" value="0"/>
+      </label>
+      <label>Notes (optional)
+        <input type="text" name="notes"/>
+      </label>
+      <label style="display:flex;align-items:center;gap:0.5rem;">
+        <input type="checkbox" name="offlinePaidImmediate" value="true"/>
+        <span>Paid at counter now (confirms immediately)</span>
+      </label>
+      <button type="submit" class="hms-btn">Create appointment</button>
+    </form>
+
+    <h2 style="font-size:1rem;margin:1.5rem 0 0.5rem;">Cancel appointment</h2>
+    <form class="hms-form" th:action="@{/app/reception/desk/cancel}" method="post" style="max-width:360px;">
+      <label>Appointment ID
+        <input type="number" name="appointmentId" required min="1" placeholder="e.g. 12"/>
+      </label>
+      <button type="submit" class="hms-btn hms-btn-ghost">Cancel</button>
+    </form>
+
+    <label class="hms-field-label" for="patient-q" style="margin-top:1.5rem;display:block;">Patient search</label>
+    <input type="search" id="patient-q" class="hms-input-search" placeholder="Type at least 2 letters…" autocomplete="off"/>
+    <div id="patient-q-results" class="hms-search-hits" aria-live="polite"></div>
+
+    <label class="hms-field-label" for="desk-filter" style="margin-top:1rem;display:block;">Filter directory</label>
+    <input type="search" id="desk-filter" class="hms-input-search" placeholder="MRN or user id…" autocomplete="off"/>
+
+    <table class="hms-table hms-table-filterable" id="desk-table" th:if="${!profiles.isEmpty()}">
+      <thead><tr><th>MRN</th><th>Patient user ID</th></tr></thead>
+      <tbody>
+      <tr th:each="p : ${profiles}" th:attr="data-search=${#strings.toLowerCase(p.mrn + ' ' + p.user.id)}">
+        <td th:text="${p.mrn}">—</td>
+        <td th:text="${p.user.id}">—</td>
+      </tr>
+      </tbody>
+    </table>
+    <p class="hms-muted" th:if="${profiles.isEmpty()}">No patient profiles.</p>
+  </div>
+  <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.HMS) {
+        HMS.bindPatientSearch('#patient-q', '#patient-q-results', '/api/search/patients');
+        HMS.bindTableFilter('#desk-filter', '#desk-table', 'data-search');
+      }
+    });
+  </script>
+</section>
+</body>
+</html>

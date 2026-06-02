@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head><title>Roster</title></head>
+<body>
+<section layout:fragment="content">
+  <div class="hms-card">
+    <h1>Daily roster</h1>
+    <p class="hms-muted" th:text="'Date: ' + ${#temporals.format(day, 'yyyy-MM-dd')}">—</p>
+    <form method="get" style="margin-bottom:1rem;">
+      <label class="hms-muted" style="display:inline;margin-right:0.5rem;">Pick date</label>
+      <input type="date" name="date" th:value="${#temporals.format(day, 'yyyy-MM-dd')}" style="max-width:180px;"/>
+      <button type="submit" class="hms-btn" style="margin-left:0.5rem;">Load</button>
+    </form>
+    <table class="hms-table" th:if="${!logs.isEmpty()}">
+      <thead><tr><th>Staff</th><th>In</th><th>Out</th><th>Status</th></tr></thead>
+      <tbody>
+      <tr th:each="l : ${logs}">
+        <td th:text="${l.staff.username}">—</td>
+        <td th:text="${l.checkIn != null ? #temporals.format(l.checkIn, 'HH:mm') : '—'}">—</td>
+        <td th:text="${l.checkOut != null ? #temporals.format(l.checkOut, 'HH:mm') : '—'}">—</td>
+        <td th:text="${l.dayStatus}">—</td>
+      </tr>
+      </tbody>
+    </table>
+    <p class="hms-muted" th:if="${logs.isEmpty()}">No attendance records for this day.</p>
+  </div>
+</section>
+</body>
+</html>

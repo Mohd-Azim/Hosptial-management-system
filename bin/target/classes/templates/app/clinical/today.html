@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head><title>Clinical — today</title></head>
+<body>
+<section layout:fragment="content">
+  <div class="hms-card">
+    <h1>Today’s appointments</h1>
+    <p class="hms-muted" th:text="${#temporals.format(day, 'yyyy-MM-dd')}">Date</p>
+    <p class="hms-muted">Confirmed, paid appointments only. Check in, then complete visit with prescription lines. Enable pharmacy when the patient should collect medicines here.</p>
+
+    <label class="hms-field-label" for="clinical-filter">Search</label>
+    <input type="search" id="clinical-filter" class="hms-input-search" placeholder="Patient or notes…" autocomplete="off"/>
+
+    <div id="clinical-list" th:if="${!rows.isEmpty()}">
+      <article th:each="row : ${rows}" class="hms-card" style="margin-top:1rem;padding:1rem 1.25rem;"
+          th:attr="data-search=${#strings.toLowerCase(row.appointment.patient.fullName + ' ' + (row.appointment.notes != null ? row.appointment.notes : ''))}">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem 1rem;align-items:baseline;justify-content:space-between;">
+          <div>
+            <strong th:text="${#temporals.format(row.appointment.scheduledAt, 'HH:mm')}">09:00</strong>
+            <span> — </span>
+            <span th:text="${row.appointment.patient.fullName}">Patient</span>
+          </div>
+          <span class="hms-muted" th:switch="${row.phase}">
+            <th:block th:case="'CHECKIN'">Awaiting check-in</th:block>
+            <th:block th:case="'PRESCRIBE'">Ready to prescribe</th:block>
+            <th:block th:case="'DONE'">Completed</th:block>
+            <th:block th:case="*">Other</th:block>
+          </span>
+        </div>
+        <p class="hms-muted" style="margin:0.35rem 0 0;" th:text="${row.appointment.notes != null ? row.appointment.notes : '—'}">Notes</p>
+
+        <div th:switch="${row.phase}" style="margin-top:1rem;">
+          <th:block th:case="'CHECKIN'">
+            <form class="hms-form" th:action="@{/app/clinical/check-in}" method="post">
+              <input type="hidden" name="appointmentId" th:value="${row.appointment.id}"/>
+              <th:block th:if="${principal.roles.contains(T(com.hospital.hms.domain.enums.RoleCode).DOCTOR)}">
+                <input type="hidden" name="doctorUserId" th:value="${principal.userId}"/>
+              </th:block>
+              <th:block th:unless="${principal.roles.contains(T(com.hospital.hms.domain.enums.RoleCode).DOCTOR)}">
+                <label>Doctor
+                  <select name="doctorUserId" required>
+                    <option value="" disabled selected>Choose…</option>
+                    <option th:each="d : ${doctors}" th:value="${d.id}" th:text="${d.fullName + ' (' + d.id + ')'}">Dr</option>
+                  </select>
+                </label>
+              </th:block>
+              <label>Assistant (optional)
+                <select name="assistantUserId">
+                  <option value="">—</option>
+                  <option th:each="a : ${assistants}" th:value="${a.id}" th:text="${a.fullName}">Asst</option>
+                </select>
+              </label>
+              <button type="submit" class="hms-btn" style="margin-top:0.5rem;">Check in</button>
+            </form>
+          </th:block>
+
+          <th:block th:case="'PRESCRIBE'">
+            <form class="hms-form" th:action="@{/app/clinical/complete-visit}" method="post">
+              <input type="hidden" name="appointmentId" th:value="${row.appointment.id}"/>
+              <th:block th:if="${principal.roles.contains(T(com.hospital.hms.domain.enums.RoleCode).DOCTOR)}">
+                <input type="hidden" name="doctorUserId" th:value="${principal.userId}"/>
+              </th:block>
+              <th:block th:unless="${principal.roles.contains(T(com.hospital.hms.domain.enums.RoleCode).DOCTOR)}">
+                <label>Doctor
+                  <select name="doctorUserId" required>
+                    <option value="" disabled selected>Choose…</option>
+                    <option th:each="d : ${doctors}" th:value="${d.id}" th:text="${d.fullName + ' (' + d.id + ')'}">Dr</option>
+                  </select>
+                </label>
+              </th:block>
+              <label>Assistant (optional)
+                <select name="assistantUserId">
+                  <option value="">—</option>
+                  <option th:each="a : ${assistants}" th:value="${a.id}" th:text="${a.fullName}">Asst</option>
+                </select>
+              </label>
+              <label style="display:flex;align-items:center;gap:0.5rem;margin-top:0.5rem;">
+                <input type="checkbox" name="pharmacyOptIn" value="true"/>
+                <span>Send lines to pharmacy queue</span>
+              </label>
+              <label>Instructions
+                <textarea name="instructions" rows="2" placeholder="Diet, follow-up, etc." style="width:100%;max-width:32rem;"></textarea>
+              </label>
+              <p class="hms-muted" style="margin:0.75rem 0 0.25rem;">Medicines (at least one line with a name)</p>
+              <div th:each="i : ${#numbers.sequence(0, 3)}" style="display:grid;grid-template-columns:1.2fr 1fr 1fr 4rem 5rem;gap:0.5rem;margin-bottom:0.5rem;align-items:end;">
+                <label style="margin:0;">Name
+                  <input type="text" th:name="${'med_' + i + '_name'}" placeholder="e.g. Paracetamol"/>
+                </label>
+                <label style="margin:0;">Dosage
+                  <input type="text" th:name="${'med_' + i + '_dosage'}" placeholder="500mg"/>
+                </label>
+                <label style="margin:0;">Frequency
+                  <input type="text" th:name="${'med_' + i + '_freq'}" placeholder="TID"/>
+                </label>
+                <label style="margin:0;">Days
+                  <input type="number" th:name="${'med_' + i + '_days'}" min="1" value="7"/>
+                </label>
+                <label style="margin:0;">Price
+                  <input type="text" th:name="${'med_' + i + '_price'}" placeholder="0"/>
+                </label>
+              </div>
+              <button type="submit" class="hms-btn" style="margin-top:0.75rem;">Complete visit</button>
+            </form>
+          </th:block>
+
+          <th:block th:case="'DONE'">
+            <p class="hms-muted" style="margin:0;">This appointment is finished.</p>
+          </th:block>
+
+          <th:block th:case="*">
+            <p class="hms-muted" style="margin:0;">Unexpected visit state — use API or support if this persists.</p>
+          </th:block>
+        </div>
+      </article>
+    </div>
+    <p class="hms-muted" th:if="${rows.isEmpty()}">No confirmed appointments for today.</p>
+  </div>
+  <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+      var q = document.getElementById('clinical-filter');
+      var list = document.getElementById('clinical-list');
+      if (!q || !list) return;
+      q.addEventListener('input', function () {
+        var term = (q.value || '').toLowerCase().trim();
+        list.querySelectorAll('[data-search]').forEach(function (el) {
+          var blob = (el.getAttribute('data-search') || '');
+          el.style.display = !term || blob.indexOf(term) >= 0 ? '' : 'none';
+        });
+      });
+    });
+  </script>
+</section>
+</body>
+</html>

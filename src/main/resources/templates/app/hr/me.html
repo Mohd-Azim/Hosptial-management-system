@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head><title>My attendance</title></head>
+<body>
+<section layout:fragment="content">
+  <div class="hms-card">
+    <h1>My attendance</h1>
+    <table class="hms-table" th:if="${!logs.isEmpty()}">
+      <thead><tr><th>Date</th><th>In</th><th>Out</th><th>Status</th></tr></thead>
+      <tbody>
+      <tr th:each="l : ${logs}">
+        <td th:text="${l.logDate}">—</td>
+        <td th:text="${l.checkIn != null ? #temporals.format(l.checkIn, 'HH:mm') : '—'}">—</td>
+        <td th:text="${l.checkOut != null ? #temporals.format(l.checkOut, 'HH:mm') : '—'}">—</td>
+        <td th:text="${l.dayStatus}">—</td>
+      </tr>
+      </tbody>
+    </table>
+    <p class="hms-muted" th:if="${logs.isEmpty()}">No attendance rows yet. Use the REST API or future clock buttons.</p>
+  </div>
+</section>
+</body>
+</html>

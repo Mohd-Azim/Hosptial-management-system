@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head><title>Pharmacy</title></head>
+<body>
+<section layout:fragment="content">
+  <div class="hms-card">
+    <h1>Pharmacy — queue &amp; billing</h1>
+    <p class="hms-muted">Select pending fulfilment lines from the <strong>same prescription</strong>, create a bill, take payment, then dispense.</p>
+
+    <label class="hms-field-label" for="rx-filter">Search lines</label>
+    <input type="search" id="rx-filter" class="hms-input-search" placeholder="Medicine or patient…" autocomplete="off"/>
+
+    <form th:action="@{/app/pharmacy/pending/create-bill}" method="post" class="hms-form" style="margin-top:1rem;">
+      <table class="hms-table hms-table-filterable" id="rx-table" th:if="${!rows.isEmpty()}">
+        <thead><tr><th></th><th>Fulfilment</th><th>Line</th><th>Medicine</th><th>Price</th><th>Patient</th><th>User ID</th></tr></thead>
+        <tbody>
+        <tr th:each="r : ${rows}" th:attr="data-search=${r.searchBlob()}">
+          <td><input type="checkbox" name="fid" th:value="${r.fulfillmentId()}"/></td>
+          <td th:text="${r.fulfillmentId()}">—</td>
+          <td th:text="${r.lineId()}">—</td>
+          <td th:text="${r.medicineName()}">—</td>
+          <td th:text="${r.unitPrice()}">—</td>
+          <td th:text="${r.patientName()}">—</td>
+          <td th:text="${r.patientUserId()}">—</td>
+        </tr>
+        </tbody>
+      </table>
+      <p class="hms-muted" th:if="${rows.isEmpty()}">No pending fulfilment lines.</p>
+      <button type="submit" class="hms-btn" style="margin-top:0.75rem;" th:disabled="${rows.isEmpty()}">Create bill from selection</button>
+    </form>
+  </div>
+
+  <div class="hms-card" style="margin-top:1.25rem;">
+    <h2 style="margin-top:0;">Open pharmacy bills</h2>
+    <p class="hms-muted">Pay at counter, then dispense. Workflow is pay-first.</p>
+    <table class="hms-table" th:if="${!openPharmacyBills.isEmpty()}">
+      <thead><tr><th>Bill</th><th>Patient</th><th>Total</th><th>Actions</th></tr></thead>
+      <tbody>
+      <tr th:each="b : ${openPharmacyBills}">
+        <td th:text="${b.id}">—</td>
+        <td th:text="${b.patient.fullName}">—</td>
+        <td th:text="${b.totalAmount}">—</td>
+        <td style="white-space:nowrap;">
+          <form th:action="@{/app/pharmacy/pending/pay-bill}" method="post" style="display:inline;">
+            <input type="hidden" name="billId" th:value="${b.id}"/>
+            <button type="submit" class="hms-btn hms-btn-ghost" style="padding:0.35rem 0.75rem;font-size:0.8125rem;">Pay</button>
+          </form>
+          <form th:action="@{/app/pharmacy/pending/dispense}" method="post" style="display:inline;margin-left:0.35rem;">
+            <input type="hidden" name="billId" th:value="${b.id}"/>
+            <button type="submit" class="hms-btn" style="padding:0.35rem 0.75rem;font-size:0.8125rem;">Dispense</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <p class="hms-muted" th:if="${openPharmacyBills.isEmpty()}">No open pharmacy bills.</p>
+  </div>
+
+  <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.HMS && HMS.bindTableFilter) {
+        HMS.bindTableFilter('#rx-filter', '#rx-table', 'data-search');
+      }
+    });
+  </script>
+</section>
+</body>
+</html>

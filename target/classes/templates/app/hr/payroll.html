@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head><title>Payroll</title></head>
+<body>
+<section layout:fragment="content">
+  <div class="hms-card">
+    <h1>Payroll</h1>
+    <h2 style="font-size:1rem;margin:1rem 0 0.5rem;">Components</h2>
+    <table class="hms-table" th:if="${!components.isEmpty()}">
+      <thead><tr><th>Code</th><th>Name</th><th>Kind</th></tr></thead>
+      <tbody>
+      <tr th:each="c : ${components}">
+        <td th:text="${c.code}">—</td>
+        <td th:text="${c.name}">—</td>
+        <td th:text="${c.componentKind}">—</td>
+      </tr>
+      </tbody>
+    </table>
+    <h2 style="font-size:1rem;margin:1.25rem 0 0.5rem;">Runs</h2>
+    <table class="hms-table" th:if="${!runs.isEmpty()}">
+      <thead><tr><th>Year</th><th>Month</th><th>Status</th></tr></thead>
+      <tbody>
+      <tr th:each="r : ${runs}">
+        <td th:text="${r.periodYear}">—</td>
+        <td th:text="${r.periodMonth}">—</td>
+        <td th:text="${r.status}">—</td>
+      </tr>
+      </tbody>
+    </table>
+    <p class="hms-muted" th:if="${runs.isEmpty()}">No payroll runs yet.</p>
+  </div>
+</section>
+</body>
+</html>

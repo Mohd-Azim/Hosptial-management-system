@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+  <header class="hms-top" th:fragment="header">
+    <div class="hms-brand">
+      <span class="material-symbols-outlined hms-brand-icon" aria-hidden="true">local_hospital</span>
+      HMS <span>Hospital management</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <span th:if="${notificationCount != null and notificationCount > 0}" class="hms-badge" title="Notifications in inbox"
+            th:text="${notificationCount}">0</span>
+      <span class="hms-user" th:if="${userFullName != null}" th:text="${userFullName + ' · ' + principal.username}">User</span>
+      <form th:action="@{/logout}" method="post" style="margin:0;">
+        <button type="submit" class="hms-btn hms-btn-ghost" style="padding:0.4rem 1rem;font-size:0.8125rem;">Log out</button>
+      </form>
+    </div>
+  </header>
+
+  <aside class="hms-nav" th:fragment="nav">
+    <nav>
+      <h3>General</h3>
+      <a th:href="@{/app/dashboard}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">dashboard</span>Dashboard</a>
+
+      <th:block th:if="${navPatient}">
+        <h3>Patient</h3>
+        <a th:href="@{/app/patient/home}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">person</span>My care</a>
+      </th:block>
+
+      <th:block th:if="${navReception}">
+        <h3>Reception</h3>
+        <a th:href="@{/app/reception/desk}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">support_agent</span>Front desk</a>
+      </th:block>
+
+      <th:block th:if="${navClinical}">
+        <h3>Clinical</h3>
+        <a th:href="@{/app/clinical/today}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">medical_services</span>Today’s appointments</a>
+      </th:block>
+
+      <th:block th:if="${navPharmacy}">
+        <h3>Pharmacy</h3>
+        <a th:href="@{/app/pharmacy/pending}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">local_pharmacy</span>Dispensing queue</a>
+      </th:block>
+
+      <th:block th:if="${navFacility}">
+        <h3>Beds</h3>
+        <a th:href="@{/app/facility/wards}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">hotel</span>Wards &amp; beds</a>
+      </th:block>
+
+      <th:block th:if="${navHrStaff}">
+        <h3>People</h3>
+        <a th:href="@{/app/hr/me}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">schedule</span>My attendance</a>
+      </th:block>
+
+      <th:block th:if="${navHr}">
+        <h3>HR</h3>
+        <a th:href="@{/app/hr/roster}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">calendar_month</span>Daily roster</a>
+        <a th:href="@{/app/hr/payroll}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">payments</span>Payroll</a>
+      </th:block>
+
+      <th:block th:if="${navProcurement}">
+        <h3>Procurement</h3>
+        <a th:href="@{/app/procurement/vendors}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">inventory_2</span>Suppliers / vendors</a>
+      </th:block>
+
+      <th:block th:if="${navFinance}">
+        <h3>Finance</h3>
+        <a th:href="@{/app/finance/misc}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">account_balance</span>Miscellaneous expenses</a>
+      </th:block>
+
+      <th:block th:if="${navCompliance}">
+        <h3>Compliance</h3>
+        <a th:href="@{/app/compliance/waste}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">recycling</span>Bio-medical waste log</a>
+      </th:block>
+
+      <th:block th:if="${navAdmin}">
+        <h3>Administration</h3>
+        <a th:href="@{/app/admin/users}"><span class="material-symbols-outlined hms-nav-ic" aria-hidden="true">admin_panel_settings</span>Users</a>
+      </th:block>
+    </nav>
+  </aside>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head>
+  <title>Dashboard</title>
+</head>
+<body>
+<section layout:fragment="content">
+  <div class="hms-card">
+    <h1>Dashboard</h1>
+    <p class="hms-muted">Choose a module from the sidebar. Session-based access aligns with your roles.</p>
+    <div class="hms-alert" th:if="${param.error != null}" th:text="'You do not have access to that page.'"></div>
+    <div class="hms-grid">
+      <a th:href="@{/app/patient/home}" class="hms-tile" style="text-decoration:none;" th:if="${navPatient}">
+        <h2>Patient portal</h2>
+        <p>Appointments, prescriptions, bills</p>
+      </a>
+      <a th:href="@{/app/reception/desk}" class="hms-tile" style="text-decoration:none;" th:if="${navReception}">
+        <h2>Reception</h2>
+        <p>Front desk &amp; patient lookup</p>
+      </a>
+      <a th:href="@{/app/clinical/today}" class="hms-tile" style="text-decoration:none;" th:if="${navClinical}">
+        <h2>Clinical</h2>
+        <p>Today’s schedule</p>
+      </a>
+      <a th:href="@{/app/pharmacy/pending}" class="hms-tile" style="text-decoration:none;" th:if="${navPharmacy}">
+        <h2>Pharmacy</h2>
+        <p>Pending fulfilments</p>
+      </a>
+      <a th:href="@{/app/facility/wards}" class="hms-tile" style="text-decoration:none;" th:if="${navFacility}">
+        <h2>Facility</h2>
+        <p>Wards &amp; beds</p>
+      </a>
+      <a th:href="@{/app/hr/me}" class="hms-tile" style="text-decoration:none;" th:if="${navHrStaff}">
+        <h2>Attendance</h2>
+        <p>Your clock-in / clock-out</p>
+      </a>
+      <a th:href="@{/app/hr/roster}" class="hms-tile" style="text-decoration:none;" th:if="${navHr}">
+        <h2>HR roster</h2>
+        <p>Daily attendance overview</p>
+      </a>
+      <a th:href="@{/app/hr/payroll}" class="hms-tile" style="text-decoration:none;" th:if="${navHr}">
+        <h2>Payroll</h2>
+        <p>Components &amp; runs</p>
+      </a>
+      <a th:href="@{/app/procurement/vendors}" class="hms-tile" style="text-decoration:none;" th:if="${navProcurement}">
+        <h2>Procurement</h2>
+        <p>Suppliers &amp; vendors</p>
+      </a>
+      <a th:href="@{/app/finance/misc}" class="hms-tile" style="text-decoration:none;" th:if="${navFinance}">
+        <h2>Misc expenses</h2>
+        <p>Ad-hoc hospital spends</p>
+      </a>
+      <a th:href="@{/app/compliance/waste}" class="hms-tile" style="text-decoration:none;" th:if="${navCompliance}">
+        <h2>Waste</h2>
+        <p>BMW logs</p>
+      </a>
+      <a th:href="@{/app/admin/users}" class="hms-tile" style="text-decoration:none;" th:if="${navAdmin}">
+        <h2>Admin</h2>
+        <p>Users &amp; access</p>
+      </a>
+    </div>
+    <p class="hms-muted" style="margin-top:1.5rem;">REST JSON APIs remain under <code>/api/**</code> for integrations.</p>
+  </div>
+</section>
+</body>
+</html>

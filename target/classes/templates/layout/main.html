@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="#141218"/>
+  <title layout:title-pattern="$CONTENT_TITLE — HMS">HMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+  <link rel="stylesheet" th:href="@{/css/hms.css}"/>
+  <script defer th:src="@{/js/hms-ui.js}"></script>
+</head>
+<body>
+  <header th:replace="~{fragments/chrome :: header}"></header>
+  <div class="hms-shell">
+    <aside th:replace="~{fragments/chrome :: nav}"></aside>
+    <main class="hms-main">
+      <div th:replace="~{fragments/flash :: alerts}"></div>
+      <div layout:fragment="content"></div>
+    </main>
+  </div>
+</body>
+</html>
