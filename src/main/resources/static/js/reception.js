@@ -329,8 +329,8 @@
     function updateSlotState() {
       var value = slotInput.value;
       var doctor = doctorInput ? doctorInput.value : '';
-      var blocked = (doctor === 'Dr. Priya Menon' && value.indexOf('2026-05-22T') === 0) ||
-        (doctor === 'Dr. Kabir Mehta' && value.indexOf('2026-05-22T13') === 0);
+      var blocked = (doctor === 'Dr. Priya Menon' && value.indexOf('2026-06-16T') === 0) ||
+        (doctor === 'Dr. Kabir Mehta' && value.indexOf('2026-06-16T13') === 0);
       warning.hidden = !blocked;
       submit.disabled = blocked;
       submit.classList.toggle('is-disabled', blocked);
@@ -463,9 +463,10 @@
       if (body) {
         var row = button.closest('tr');
         if (type === 'appointment' && row) {
+          var doctorCell = row.children.length >= 9 ? row.children[5] : row.children[2];
           body.innerHTML = [
             '<div><small>Patient</small><strong>' + row.children[1].textContent.trim() + '</strong></div>',
-            '<div><small>Doctor</small><strong>' + row.children[2].textContent.trim() + '</strong></div>',
+            '<div><small>Doctor</small><strong>' + doctorCell.textContent.trim() + '</strong></div>',
             '<div><small>Department</small><strong>' + row.children[3].textContent.trim() + '</strong></div>',
             '<div><small>Timing</small><strong>' + row.children[4].textContent.trim() + ' · ' + row.children[5].textContent.trim() + '</strong></div>',
             '<div><small>Status</small><strong>' + row.children[6].textContent.trim() + '</strong></div>',
@@ -553,7 +554,10 @@
       if (!button) return;
       var percent = parseInt(button.getAttribute('data-refund-calc') || button.getAttribute('data-refund-policy'), 10);
       var field = document.querySelector('[data-refund-amount]');
-      if (field) field.value = String(Math.round(700 * percent / 100));
+      var baseInput = document.querySelector('[data-refund-base]');
+      var baseAmount = baseInput ? parseFloat(baseInput.value) : 700;
+      if (!Number.isFinite(baseAmount)) baseAmount = 700;
+      if (field) field.value = String(Math.round(baseAmount * percent / 100));
       showToast('Refund policy selected: ' + percent + '%.');
     });
   }
@@ -603,7 +607,7 @@
       var total = items.length || 1;
       bar.style.width = Math.round(done / total * 100) + '%';
       label.textContent = done + ' of ' + total + ' completed';
-      showToast('Checklist updated: ' + done + '/' + total + '.');
+      if (arguments.length > 0) showToast('Checklist updated: ' + done + '/' + total + '.');
     }
 
     checklist.querySelectorAll('[data-checklist-item]').forEach(function (item) {

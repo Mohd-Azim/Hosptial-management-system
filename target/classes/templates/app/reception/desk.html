@@ -1,126 +1,196 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
 <head>
-  <title>Reception Panel</title>
+  <title>Reception Command Center</title>
   <link rel="stylesheet" th:href="@{/css/reception.css}"/>
 </head>
 <body>
 <section layout:fragment="content">
   <div class="hms-reception" data-reception-module>
-    <section class="rx-page-head" id="reception-dashboard">
+    <section class="rx-command-head" id="reception-dashboard">
       <div>
-        <span class="rx-kicker"><span class="material-symbols-outlined" aria-hidden="true">support_agent</span>Reception Panel</span>
-        <h1>Appointment operations</h1>
-        <p>Manage bookings, check-ins, doctor availability, patient history, billing, and receipts from one focused desk.</p>
+        <span class="rx-kicker"><span class="material-symbols-outlined" aria-hidden="true">support_agent</span>Reception command center</span>
+        <h1>Front desk operations</h1>
+        <p>Register patients, book appointments, track OPD/IPD movement, support calls, handle billing, answer calendar queries, and coordinate ambulance or labs from one clean screen.</p>
       </div>
-      <div class="rx-head-actions">
-        <button type="button" class="hms-btn hms-btn-ghost" data-scroll-target="#patient-history">Find patient</button>
-        <button type="button" class="hms-btn" data-scroll-target="#book-appointment">New appointment</button>
+      <div class="rx-shift-card">
+        <span>Current shift</span>
+        <strong>08:00 - 20:00</strong>
+        <small>Desk lead: Reception Team</small>
       </div>
     </section>
 
     <nav class="rx-subnav" aria-label="Reception navigation">
-      <a href="#appointments"><span class="material-symbols-outlined">event_available</span>Appointments</a>
-      <a href="#doctor-schedule"><span class="material-symbols-outlined">stethoscope</span>Doctor Schedule</a>
-      <a href="#patient-history"><span class="material-symbols-outlined">clinical_notes</span>Patient History</a>
-      <a href="#billing"><span class="material-symbols-outlined">payments</span>Billing</a>
-      <a href="#doctor-unavailable"><span class="material-symbols-outlined">event_busy</span>Unavailable Doctors</a>
+      <a href="#kyc"><span class="material-symbols-outlined" aria-hidden="true">badge</span>KYC</a>
+      <a href="#book-appointment"><span class="material-symbols-outlined" aria-hidden="true">event_available</span>Booking</a>
+      <a href="#patient-tracking"><span class="material-symbols-outlined" aria-hidden="true">route</span>OPD/IPD</a>
+      <a href="#on-call-support"><span class="material-symbols-outlined" aria-hidden="true">call</span>On call</a>
+      <a href="#billing"><span class="material-symbols-outlined" aria-hidden="true">payments</span>Billing</a>
+      <a href="#doctor-schedule"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>Doctors</a>
+      <a href="#ambulance-labs"><span class="material-symbols-outlined" aria-hidden="true">emergency</span>Ambulance &amp; labs</a>
     </nav>
 
-    <section class="rx-card" id="appointments">
+    <section class="rx-metrics" aria-label="Reception summary">
+      <article><span class="material-symbols-outlined" aria-hidden="true">groups</span><small>Queue now</small><strong data-queue-count>18</strong><em>6 priority</em></article>
+      <article><span class="material-symbols-outlined" aria-hidden="true">event_note</span><small>Appointments</small><strong>42</strong><em>11 walk-ins</em></article>
+      <article><span class="material-symbols-outlined" aria-hidden="true">hotel</span><small>IPD admissions</small><strong>7</strong><em>2 ICU holds</em></article>
+      <article><span class="material-symbols-outlined" aria-hidden="true">currency_rupee</span><small>Refund queue</small><strong>5</strong><em>Rs. 12,400 review</em></article>
+    </section>
+
+    <section class="rx-workspace">
+      <article class="rx-panel rx-panel-main" id="kyc">
+        <div class="rx-section-head">
+          <div>
+            <span class="rx-kicker">1. Patient intake</span>
+            <h2>Register patient and complete KYC</h2>
+          </div>
+          <button type="button" class="hms-btn" data-modal-open="new-patient-modal">
+            <span class="material-symbols-outlined" aria-hidden="true">person_add</span>
+            New KYC
+          </button>
+        </div>
+        <div class="rx-intake-grid">
+          <div class="rx-lookup-card">
+            <label class="rx-label" for="patient-q">Find patient</label>
+            <input type="search" id="patient-q" class="rx-input" placeholder="Search MRN, name, mobile" autocomplete="off"/>
+            <div id="patient-q-results" class="hms-search-hits" aria-live="polite"></div>
+          </div>
+          <div class="rx-checklist" data-checklist>
+            <div class="rx-progress-head">
+              <strong>KYC readiness</strong>
+              <span data-checklist-label>0 of 6 completed</span>
+            </div>
+            <div class="rx-progress"><span data-checklist-progress></span></div>
+            <label><input type="checkbox" data-checklist-item/> Identity proof captured</label>
+            <label><input type="checkbox" data-checklist-item/> Mobile and address verified</label>
+            <label><input type="checkbox" data-checklist-item/> Emergency contact added</label>
+            <label><input type="checkbox" data-checklist-item/> Insurance or payer tagged</label>
+            <label><input type="checkbox" data-checklist-item/> Consent and privacy accepted</label>
+            <label><input type="checkbox" data-checklist-item/> Allergy and risk notes saved</label>
+          </div>
+        </div>
+      </article>
+
+      <article class="rx-panel" id="book-appointment">
+        <div class="rx-section-head">
+          <div>
+            <span class="rx-kicker">2. Appointment desk</span>
+            <h2>Book for new or existing patient</h2>
+          </div>
+        </div>
+        <form class="hms-form rx-form" th:action="@{/app/reception/desk/book}" method="post">
+          <label>Patient
+            <div class="rx-patient-add-row">
+              <div class="rx-patient-select-wrap" data-patient-lookup>
+                <input type="search" class="rx-input" id="patient-uhid-search" data-patient-lookup-input placeholder="Search MRN, name, mobile" autocomplete="off" aria-label="Search patient by MRN, name, or mobile" aria-controls="patient-uhid-dropdown"/>
+                <div id="patient-uhid-dropdown" class="rx-patient-dropdown" data-patient-lookup-results aria-live="polite"></div>
+                <input type="hidden" name="patientUserId" id="patientUserId-hidden" data-patient-id-input required/>
+                <select data-patient-source hidden aria-hidden="true" tabindex="-1">
+                  <option th:each="p : ${profiles}" th:value="${p.user.id}" th:text="${p.mrn + ' - ' + p.user.fullName + ' (id ' + p.user.id + ')'}">MRN-2041 - Neha Jain (id 1)</option>
+                </select>
+              </div>
+              <button type="button" class="hms-btn hms-btn-ghost" data-modal-open="new-patient-modal">Register new</button>
+            </div>
+          </label>
+          <div class="rx-form-grid">
+            <label>Visit type
+              <select name="notes" required>
+                <option>OPD consultation</option>
+                <option>Follow-up OPD</option>
+                <option>Emergency triage</option>
+                <option>IPD admission consult</option>
+                <option>Lab review</option>
+              </select>
+            </label>
+            <label>Department
+              <select data-booking-department>
+                <option>General Medicine</option>
+                <option>Cardiology</option>
+                <option>Neurology</option>
+                <option>Surgery</option>
+                <option>Emergency</option>
+                <option>ICU</option>
+              </select>
+            </label>
+            <label>Preferred doctor
+              <select data-booking-doctor>
+                <option value="">Select available doctor</option>
+                <option>Dr. Ananya Rao</option>
+                <option>Dr. Kabir Mehta</option>
+                <option>Dr. Priya Menon</option>
+                <option>Dr. Omar Siddiqui</option>
+              </select>
+            </label>
+            <label>Channel
+              <select name="bookingChannel" required>
+                <option th:each="c : ${channels}" th:value="${c.name()}" th:text="${c.name()}">WALK_IN</option>
+              </select>
+            </label>
+            <label>Date and time<input type="datetime-local" name="scheduledAtLocal" required data-slot-input/></label>
+            <label>Registration / consult fee<input type="text" name="consultationFee" value="700"/></label>
+          </div>
+          <label class="rx-check"><input type="checkbox" name="offlinePaidImmediate" value="true"/><span>Collect payment at counter now</span></label>
+          <div class="rx-slot-warning" data-slot-warning hidden>Selected doctor has unavailable time. Choose another slot.</div>
+          <button type="submit" class="hms-btn" data-book-submit>
+            <span class="material-symbols-outlined" aria-hidden="true">event_available</span>
+            Confirm booking
+          </button>
+        </form>
+      </article>
+    </section>
+
+    <section class="rx-panel" id="patient-tracking">
       <div class="rx-section-head">
         <div>
-          <span class="rx-kicker">Main workflow</span>
-          <h2>Appointment list</h2>
+          <span class="rx-kicker">3. Patient movement</span>
+          <h2>Multi-department OPD/IPD tracking</h2>
         </div>
         <div class="rx-toolbar">
-          <input type="search" class="rx-input" data-appointment-search placeholder="Search ID, patient, doctor, mobile"/>
-          <button type="button" class="hms-btn hms-btn-ghost" data-reset-appointment-filters>Reset</button>
+          <input type="search" class="rx-input" data-appointment-search placeholder="Search token, patient, department"/>
+          <button type="button" class="hms-btn hms-btn-ghost" data-token-generate>New token</button>
         </div>
       </div>
-
-      <div class="rx-filter-grid">
-        <label>Period
-          <select data-appointment-filter="period">
-            <option value="">All</option>
-            <option value="today">Today appointments</option>
-            <option value="future">Future appointments</option>
-            <option value="previous">Previous appointments</option>
-            <option value="custom">Custom date range</option>
-          </select>
-        </label>
-        <label>From<input type="date" data-date-from/></label>
-        <label>To<input type="date" data-date-to/></label>
-        <label>Doctor
-          <select data-appointment-filter="doctor">
-            <option value="">All doctors</option>
-            <option>Dr. Ananya Rao</option>
-            <option>Dr. Kabir Mehta</option>
-            <option>Dr. Priya Menon</option>
-            <option>Dr. Omar Siddiqui</option>
-          </select>
-        </label>
-        <label>Department
-          <select data-appointment-filter="department">
-            <option value="">All departments</option>
-            <option>Cardiology</option>
-            <option>Neurology</option>
-            <option>Surgery</option>
-            <option>Emergency</option>
-            <option>General Medicine</option>
-          </select>
-        </label>
-        <label>Status
-          <select data-appointment-filter="status">
-            <option value="">All status</option>
-            <option>booked</option>
-            <option>checked-in</option>
-            <option>completed</option>
-            <option>cancelled</option>
-            <option>no-show</option>
-          </select>
-        </label>
+      <div class="rx-flow-board" data-token-board>
+        <article data-token-card><strong>T-018</strong><span>Fatima Sheikh</span><small>OPD - General Medicine - waiting 08 min</small><em class="reception-pill warning">Queued</em></article>
+        <article data-token-card><strong>T-019</strong><span>Aarav Khan</span><small>Cardiology - vitals room - waiting 04 min</small><em class="reception-pill info">In progress</em></article>
+        <article data-token-card><strong>IPD-07</strong><span>Meera Sen</span><small>ICU admission - bed approval pending</small><em class="reception-pill danger">Priority</em></article>
+        <article data-token-card><strong>ER-03</strong><span>Unknown trauma</span><small>Emergency - doctor called - labs stat</small><em class="reception-pill danger">Critical</em></article>
       </div>
-
       <div class="rx-table-wrap">
-        <table class="hms-table rx-table" id="appointment-table" data-paginated-table>
+        <table class="hms-table rx-table" id="appointment-table" data-paginated-table data-page-size="5">
           <thead>
           <tr>
-            <th data-sort="text">Appointment ID</th>
+            <th data-sort="text">Token</th>
             <th data-sort="text">Patient</th>
-            <th data-sort="text">Doctor</th>
+            <th data-sort="text">Route</th>
             <th data-sort="text">Department</th>
             <th data-sort="date">Date</th>
-            <th data-sort="text">Time</th>
+            <th data-sort="text">Doctor</th>
             <th data-sort="text">Status</th>
             <th data-sort="text">Payment</th>
             <th>Actions</th>
           </tr>
           </thead>
           <tbody>
-          <tr data-period="today" data-doctor="Dr. Ananya Rao" data-department="Cardiology" data-status="booked" data-date="2026-05-22">
-            <td>AP-1008</td><td>Aarav Khan<br/><small>+91 98765 11220</small></td><td>Dr. Ananya Rao</td><td>Cardiology</td><td>2026-05-22</td><td>09:15</td><td><span class="rx-badge info">booked</span></td><td><span class="rx-badge success">paid</span></td>
-            <td class="rx-actions"><button data-record-open="appointment:AP-1008">View</button><button data-modal-open="edit-appointment-modal">Edit</button><button data-modal-open="reschedule-modal">Reschedule</button><button data-appointment-checkin>Mark checked-in</button><button data-print-section="#appointment-table">Print slip</button></td>
+          <tr data-period="today" data-doctor="Dr. Ananya Rao" data-department="Cardiology" data-status="booked" data-date="2026-06-16">
+            <td>AP-2108</td><td>Aarav Khan<br/><small>MRN-2081 - +91 98765 11220</small></td><td>OPD</td><td>Cardiology</td><td>2026-06-16</td><td>Dr. Ananya Rao</td><td><span class="rx-badge info">booked</span></td><td><span class="rx-badge success">paid</span></td>
+            <td class="rx-actions"><button data-record-open="appointment:AP-2108">View</button><button data-appointment-checkin>Check-in</button><button data-print-section="#appointment-table">Print</button></td>
           </tr>
-          <tr data-period="today" data-doctor="Dr. Kabir Mehta" data-department="Surgery" data-status="checked-in" data-date="2026-05-22">
-            <td>AP-1009</td><td>Diya Rao<br/><small>+91 98765 33445</small></td><td>Dr. Kabir Mehta</td><td>Surgery</td><td>2026-05-22</td><td>09:40</td><td><span class="rx-badge success">checked-in</span></td><td><span class="rx-badge warning">due</span></td>
-            <td class="rx-actions"><button data-record-open="appointment:AP-1009">View</button><button data-modal-open="edit-appointment-modal">Edit</button><button data-modal-open="reschedule-modal">Reschedule</button><button data-modal-open="cancel-modal">Cancel</button><button data-print-section="#appointment-table">Print slip</button></td>
+          <tr data-period="today" data-doctor="Dr. Kabir Mehta" data-department="Surgery" data-status="checked-in" data-date="2026-06-16">
+            <td>AP-2109</td><td>Diya Rao<br/><small>MRN-2044 - +91 98765 33445</small></td><td>OPD</td><td>Surgery</td><td>2026-06-16</td><td>Dr. Kabir Mehta</td><td><span class="rx-badge success">checked-in</span></td><td><span class="rx-badge warning">due</span></td>
+            <td class="rx-actions"><button data-record-open="appointment:AP-2109">View</button><button data-modal-open="reschedule-modal">Reschedule</button><button data-modal-open="cancel-modal">Cancel</button></td>
           </tr>
-          <tr data-period="future" data-doctor="Dr. Priya Menon" data-department="Neurology" data-status="booked" data-date="2026-05-24">
-            <td>AP-1010</td><td>Rohan Das<br/><small>+91 98765 77889</small></td><td>Dr. Priya Menon</td><td>Neurology</td><td>2026-05-24</td><td>11:10</td><td><span class="rx-badge info">booked</span></td><td><span class="rx-badge info">insurance</span></td>
-            <td class="rx-actions"><button data-record-open="appointment:AP-1010">View</button><button data-modal-open="edit-appointment-modal">Edit</button><button data-modal-open="reschedule-modal">Reschedule</button><button data-modal-open="cancel-modal">Cancel</button><button data-print-section="#appointment-table">Print slip</button></td>
+          <tr data-period="today" data-doctor="Dr. Omar Siddiqui" data-department="Emergency" data-status="critical" data-date="2026-06-16">
+            <td>ER-03</td><td>Unknown trauma<br/><small>Emergency contact pending</small></td><td>Emergency</td><td>Emergency</td><td>2026-06-16</td><td>Dr. Omar Siddiqui</td><td><span class="rx-badge danger">critical</span></td><td><span class="rx-badge warning">pending</span></td>
+            <td class="rx-actions"><button data-record-open="appointment:ER-03">View</button><button data-scroll-target="#ambulance-labs">Support</button></td>
           </tr>
-          <tr data-period="previous" data-doctor="Dr. Omar Siddiqui" data-department="Emergency" data-status="completed" data-date="2026-05-20">
-            <td>AP-0998</td><td>Meera Sen<br/><small>+91 98765 99120</small></td><td>Dr. Omar Siddiqui</td><td>Emergency</td><td>2026-05-20</td><td>18:30</td><td><span class="rx-badge success">completed</span></td><td><span class="rx-badge success">paid</span></td>
-            <td class="rx-actions"><button data-record-open="appointment:AP-0998">View</button><button data-print-section="#appointment-table">Print slip</button></td>
+          <tr data-period="today" data-doctor="Dr. Priya Menon" data-department="Neurology" data-status="admitted" data-date="2026-06-16">
+            <td>IPD-07</td><td>Meera Sen<br/><small>MRN-1978 - CarePlus</small></td><td>IPD</td><td>ICU</td><td>2026-06-16</td><td>Dr. Priya Menon</td><td><span class="rx-badge warning">bed hold</span></td><td><span class="rx-badge info">deposit</span></td>
+            <td class="rx-actions"><button data-record-open="appointment:IPD-07">View</button><button data-scroll-target="#billing">Deposit</button></td>
           </tr>
-          <tr data-period="today" data-doctor="Dr. Ananya Rao" data-department="Cardiology" data-status="cancelled" data-date="2026-05-22">
-            <td>AP-1011</td><td>Neha Jain<br/><small>+91 98765 22110</small></td><td>Dr. Ananya Rao</td><td>Cardiology</td><td>2026-05-22</td><td>13:00</td><td><span class="rx-badge danger">cancelled</span></td><td><span class="rx-badge warning">refund due</span></td>
-            <td class="rx-actions"><button data-record-open="appointment:AP-1011">View</button><button data-scroll-target="#billing">Refund</button><button data-print-section="#appointment-table">Print slip</button></td>
-          </tr>
-          <tr data-period="previous" data-doctor="Dr. Kabir Mehta" data-department="Surgery" data-status="no-show" data-date="2026-05-21">
-            <td>AP-1002</td><td>Farhan Ali<br/><small>+91 98765 44990</small></td><td>Dr. Kabir Mehta</td><td>Surgery</td><td>2026-05-21</td><td>15:20</td><td><span class="rx-badge danger">no-show</span></td><td><span class="rx-badge warning">due</span></td>
-            <td class="rx-actions"><button data-record-open="appointment:AP-1002">View</button><button data-modal-open="reschedule-modal">Reschedule</button></td>
+          <tr data-period="future" data-doctor="Dr. Ananya Rao" data-department="Cardiology" data-status="booked" data-date="2026-06-17">
+            <td>AP-2114</td><td>Rohan Das<br/><small>MRN-2110 - +91 98765 77889</small></td><td>OPD</td><td>Cardiology</td><td>2026-06-17</td><td>Dr. Ananya Rao</td><td><span class="rx-badge info">booked</span></td><td><span class="rx-badge info">insurance</span></td>
+            <td class="rx-actions"><button data-record-open="appointment:AP-2114">View</button><button data-modal-open="reschedule-modal">Reschedule</button></td>
           </tr>
           </tbody>
         </table>
@@ -128,142 +198,136 @@
       <div class="rx-pagination" data-pagination-for="#appointment-table"></div>
     </section>
 
-    <section class="rx-grid-two">
-      <article class="rx-card" id="book-appointment">
+    <section class="rx-workspace">
+      <article class="rx-panel" id="on-call-support">
         <div class="rx-section-head">
-          <div><span class="rx-kicker">Booking</span><h2>Create appointment</h2></div>
+          <div><span class="rx-kicker">4. On call support</span><h2>Call desk and escalation</h2></div>
+          <button type="button" class="hms-btn hms-btn-ghost" data-task-add>Add follow-up</button>
         </div>
-        <form class="hms-form rx-form" th:action="@{/app/reception/desk/book}" method="post">
-          <label>Patient
-            <div class="rx-patient-add-row">
-              <div class="rx-patient-select-wrap" data-patient-lookup>
-                <input type="search" class="rx-input" id="patient-uhid-search" data-patient-lookup-input placeholder="Search MRN, name, mobile" autocomplete="off" aria-label="Search patient by MRN, name, or mobile" aria-controls="patient-uhid-dropdown" />
-                <div id="patient-uhid-dropdown" class="rx-patient-dropdown" data-patient-lookup-results aria-live="polite"></div>
-                <input type="hidden" name="patientUserId" id="patientUserId-hidden" data-patient-id-input required />
-                <select data-patient-source hidden aria-hidden="true" tabindex="-1">
-                  <option th:each="p : ${profiles}" th:value="${p.user.id}" th:text="${p.mrn + ' - ' + p.user.fullName + ' (id ' + p.user.id + ')'}">MRN-2041 - Neha Jain (id 1)</option>
-                </select>
-              </div>
-              <button type="button" class="hms-btn hms-btn-ghost" data-modal-open="new-patient-modal" title="Add a new patient">New patient</button>
-            </div>
-          </label>
-          <label>Channel
-            <select name="bookingChannel" required>
-              <option th:each="c : ${channels}" th:value="${c.name()}" th:text="${c.name()}">WALK_IN</option>
-            </select>
-          </label>
-          <label>Preferred doctor
-            <select data-booking-doctor>
-              <option value="">Select available doctor</option>
-              <option>Dr. Ananya Rao</option>
-              <option>Dr. Kabir Mehta</option>
-              <option>Dr. Priya Menon</option>
-              <option>Dr. Omar Siddiqui</option>
-            </select>
-          </label>
-          <label>Date and time<input type="datetime-local" name="scheduledAtLocal" required data-slot-input/></label>
-          <label>Consultation fee<input type="text" name="consultationFee" value="700"/></label>
-          <label>Notes<input type="text" name="notes" placeholder="Referral, priority, instructions"/></label>
-          <label class="rx-check"><input type="checkbox" name="offlinePaidImmediate" value="true"/><span>Paid at counter now</span></label>
-          <div class="rx-slot-warning" data-slot-warning hidden>Selected doctor has unavailable time. Choose another slot.</div>
-          <button type="submit" class="hms-btn" data-book-submit>Create appointment</button>
+        <form class="hms-form rx-form" data-local-form>
+          <div class="rx-form-grid">
+            <label>Caller<input type="text" value="Patient attendant"/></label>
+            <label>Phone<input type="tel" value="+91 98765 33445"/></label>
+            <label>Query type<select><option>Appointment query</option><option>Doctor delay</option><option>Billing support</option><option>Ambulance request</option><option>Lab report status</option></select></label>
+            <label>Priority<select><option>Normal</option><option>Urgent</option><option>Emergency</option></select></label>
+          </div>
+          <label>Notes<textarea class="rx-note" rows="3">Patient wants next available cardiology slot.</textarea></label>
+          <button type="submit" class="hms-btn">Save call note</button>
         </form>
+        <div class="rx-task-list" data-task-list>
+          <button type="button" data-task-toggle><span class="reception-pill warning">Open</span><strong>Call back AP-2109 attendant</strong><small>Billing clarification due this shift</small></button>
+          <button type="button" data-task-toggle><span class="reception-pill info">New</span><strong>Confirm neurology report pickup</strong><small>Lab desk waiting for patient ID</small></button>
+        </div>
       </article>
 
-      <article class="rx-card" id="doctor-schedule">
+      <article class="rx-panel" id="billing">
         <div class="rx-section-head">
-          <div><span class="rx-kicker">Doctor availability</span><h2>Schedule view</h2></div>
+          <div><span class="rx-kicker">5. Billing and refunds</span><h2>Registration, admission, ICU and returns</h2></div>
+          <button type="button" class="hms-btn hms-btn-ghost" data-print-section="#billing">Print</button>
+        </div>
+        <form class="hms-form rx-form" data-local-form>
+          <div class="rx-form-grid">
+            <label>Bill type<select><option>OPD registration</option><option>IPD admission deposit</option><option>ICU advance</option><option>Emergency registration</option><option>Lab service</option><option>Refund / return</option></select></label>
+            <label>Patient / token<input type="text" value="MRN-1978 / IPD-07"/></label>
+            <label>Amount<input type="number" value="25000" data-refund-base/></label>
+            <label>Mode<select><option>Cash</option><option>UPI</option><option>Card</option><option>Insurance</option><option>Corporate</option></select></label>
+          </div>
+          <div class="rx-refund-policy">
+            <button type="button" data-refund-calc="100">Same-day duplicate: 100%</button>
+            <button type="button" data-refund-calc="75">Before service: 75%</button>
+            <button type="button" data-refund-calc="50">Appointment cancel: 50%</button>
+            <button type="button" data-refund-calc="0">After service: 0%</button>
+          </div>
+          <label>Refund amount<input type="number" value="0" data-refund-amount/></label>
+          <label>Reason<textarea class="rx-note" rows="3">Doctor unavailable, patient requested return.</textarea></label>
+          <button type="submit" class="hms-btn">Record payment or refund</button>
+        </form>
+      </article>
+    </section>
+
+    <section class="rx-workspace">
+      <article class="rx-panel rx-panel-main" id="doctor-schedule">
+        <div class="rx-section-head">
+          <div><span class="rx-kicker">6. Doctor calendars</span><h2>Availability and patient query handling</h2></div>
           <button type="button" class="hms-btn hms-btn-ghost" data-view-toggle="#doctor-schedule-table-wrap">List / calendar</button>
         </div>
         <div class="rx-filter-row">
-          <select data-filter-table="#doctor-schedule-table" data-filter-column="1"><option value="">All departments</option><option>Cardiology</option><option>Neurology</option><option>Surgery</option><option>Emergency</option></select>
-          <select data-filter-table="#doctor-schedule-table" data-filter-column="5"><option value="">All availability</option><option>available</option><option>busy</option><option>on leave</option><option>vacation</option><option>blocked</option></select>
+          <select data-filter-table="#doctor-schedule-table" data-filter-column="1"><option value="">All departments</option><option>Cardiology</option><option>Neurology</option><option>Surgery</option><option>Emergency</option><option>ICU</option></select>
+          <select data-filter-table="#doctor-schedule-table" data-filter-column="5"><option value="">All status</option><option>available</option><option>busy</option><option>on leave</option><option>blocked</option></select>
         </div>
         <div class="rx-table-wrap" id="doctor-schedule-table-wrap">
           <table class="hms-table rx-table" id="doctor-schedule-table">
-            <thead><tr><th>Doctor</th><th>Department</th><th>Available slots</th><th>Booked</th><th>Blocked</th><th>Status</th><th>Unavailable details</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Doctor</th><th>Department</th><th>Free slots</th><th>Booked</th><th>Blocked</th><th>Status</th><th>Next available</th><th>Actions</th></tr></thead>
             <tbody>
-            <tr data-unavailable="false"><td>Dr. Ananya Rao</td><td>Cardiology</td><td>8</td><td>18</td><td>1</td><td><span class="rx-badge success">available</span></td><td>-</td><td class="rx-actions"><button data-record-open="doctor:Dr. Ananya Rao">View</button><button data-row-status="blocked">Block slot</button></td></tr>
-            <tr data-unavailable="true"><td>Dr. Priya Menon</td><td>Neurology</td><td>0</td><td>0</td><td>6</td><td><span class="rx-badge danger">vacation</span></td><td>2026-05-22, 09:00-17:00, Vacation</td><td class="rx-actions"><button data-record-open="doctor:Dr. Priya Menon">View</button></td></tr>
-            <tr data-unavailable="true"><td>Dr. Kabir Mehta</td><td>Surgery</td><td>3</td><td>22</td><td>3</td><td><span class="rx-badge warning">busy</span></td><td>13:00-14:00, OT emergency</td><td class="rx-actions"><button data-record-open="doctor:Dr. Kabir Mehta">View</button><button data-row-status="unavailable">Mark unavailable</button></td></tr>
-            <tr data-unavailable="false"><td>Dr. Omar Siddiqui</td><td>Emergency</td><td>5</td><td>11</td><td>0</td><td><span class="rx-badge info">available</span></td><td>-</td><td class="rx-actions"><button data-record-open="doctor:Dr. Omar Siddiqui">View</button><button data-row-status="emergency slot">Add emergency slot</button></td></tr>
+            <tr><td>Dr. Ananya Rao</td><td>Cardiology</td><td>8</td><td>18</td><td>1</td><td><span class="rx-badge success">available</span></td><td>10:20 today</td><td class="rx-actions"><button data-record-open="doctor:Dr. Ananya Rao">View</button><button data-row-status="blocked">Block</button></td></tr>
+            <tr><td>Dr. Priya Menon</td><td>Neurology</td><td>0</td><td>0</td><td>6</td><td><span class="rx-badge danger">on leave</span></td><td>Tomorrow 09:00</td><td class="rx-actions"><button data-record-open="doctor:Dr. Priya Menon">View</button></td></tr>
+            <tr><td>Dr. Kabir Mehta</td><td>Surgery</td><td>3</td><td>22</td><td>3</td><td><span class="rx-badge warning">busy</span></td><td>16:40 today</td><td class="rx-actions"><button data-record-open="doctor:Dr. Kabir Mehta">View</button><button data-row-status="unavailable">Mark unavailable</button></td></tr>
+            <tr><td>Dr. Omar Siddiqui</td><td>Emergency</td><td>5</td><td>11</td><td>0</td><td><span class="rx-badge success">available</span></td><td>Now</td><td class="rx-actions"><button data-record-open="doctor:Dr. Omar Siddiqui">View</button><button data-row-status="emergency slot">Add emergency slot</button></td></tr>
             </tbody>
           </table>
         </div>
       </article>
-    </section>
 
-    <section class="rx-card" id="doctor-unavailable">
-      <div class="rx-section-head">
-        <div><span class="rx-kicker">Unavailable doctors</span><h2>Vacation, leave, blocked schedules</h2></div>
-      </div>
-      <div class="rx-unavailable-grid">
-        <button type="button" data-record-open="doctor-leave:Dr. Priya Menon"><strong>Dr. Priya Menon</strong><span class="rx-badge danger">Vacation</span><small>2026-05-22 · 09:00-17:00 · Neurology</small></button>
-        <button type="button" data-record-open="doctor-leave:Dr. Kabir Mehta"><strong>Dr. Kabir Mehta</strong><span class="rx-badge warning">Emergency unavailable</span><small>Today · 13:00-14:00 · Surgery</small></button>
-        <button type="button" data-record-open="doctor-leave:Dr. Nair"><strong>Dr. Nair</strong><span class="rx-badge info">Blocked slots</span><small>Tomorrow · 10:00-12:00 · Orthopaedics</small></button>
-      </div>
-    </section>
-
-    <section class="rx-card" id="patient-history">
-      <div class="rx-section-head">
-        <div><span class="rx-kicker">Patient history</span><h2>Search and view patient file</h2></div>
-        <button type="button" class="hms-btn hms-btn-ghost" data-modal-open="patient-detail-modal">Open detail view</button>
-      </div>
-      <label class="hms-field-label" for="patient-q">Patient search</label>
-      <input type="search" id="patient-q" class="rx-input rx-wide-input" placeholder="Search by name, MRN, mobile" autocomplete="off"/>
-      <div id="patient-q-results" class="hms-search-hits" aria-live="polite"></div>
-
-      <div class="rx-tabs" data-tabs>
-        <div class="rx-tab-list">
-          <button type="button" class="active" data-tab-button="profile">Profile</button>
-          <button type="button" data-tab-button="appointment-history">Appointment history</button>
-          <button type="button" data-tab-button="billing-history">Billing history</button>
-          <button type="button" data-tab-button="refund-history">Refund history</button>
-          <button type="button" data-tab-button="admission-history">Admission history</button>
-          <button type="button" data-tab-button="notes">Notes</button>
+      <article class="rx-panel" id="ambulance-labs">
+        <div class="rx-section-head">
+          <div><span class="rx-kicker">7. Support services</span><h2>Ambulance and labs</h2></div>
         </div>
-        <div class="rx-tab-panel active" data-tab-panel="profile"><div class="rx-detail-grid"><div><small>MRN</small><strong>MRN-2041</strong></div><div><small>Patient</small><strong>Neha Jain</strong></div><div><small>Mobile</small><strong>+91 98765 22110</strong></div><div><small>Insurance</small><strong>CarePlus</strong></div></div></div>
-        <div class="rx-tab-panel" data-tab-panel="appointment-history"><p class="hms-muted">3 appointments in the last 90 days.</p></div>
-        <div class="rx-tab-panel" data-tab-panel="billing-history"><p class="hms-muted">One due consultation bill and four paid receipts.</p></div>
-        <div class="rx-tab-panel" data-tab-panel="refund-history"><p class="hms-muted">One refund request pending review.</p></div>
-        <div class="rx-tab-panel" data-tab-panel="admission-history"><p class="hms-muted">No active admission.</p></div>
-        <div class="rx-tab-panel" data-tab-panel="notes"><textarea class="rx-note" rows="4">Prefers SMS reminders. Insurance card renewal pending.</textarea></div>
-      </div>
-      <div class="rx-action-row"><button type="button" class="hms-btn" data-scroll-target="#book-appointment">Create appointment</button><button type="button" class="hms-btn hms-btn-ghost" data-scroll-target="#billing">Collect payment</button><button type="button" class="hms-btn hms-btn-ghost" data-print-section="#patient-history">Print receipt</button></div>
-    </section>
-
-    <section class="rx-card" id="billing">
-      <div class="rx-section-head">
-        <div><span class="rx-kicker">Billing</span><h2>Consultation billing and receipts</h2></div>
-        <button type="button" class="hms-btn hms-btn-ghost" data-print-section="#billing">Print billing view</button>
-      </div>
-      <div class="rx-grid-two">
+        <div class="rx-support-grid">
+          <button type="button" data-record-open="ambulance:ALS-02"><span class="material-symbols-outlined" aria-hidden="true">emergency</span><strong>ALS ambulance</strong><small>Available - bay 2 - 8 min dispatch</small></button>
+          <button type="button" data-record-open="ambulance:BLS-04"><span class="material-symbols-outlined" aria-hidden="true">local_shipping</span><strong>BLS ambulance</strong><small>On trip - ETA 18 min</small></button>
+          <button type="button" data-record-open="lab:CBC"><span class="material-symbols-outlined" aria-hidden="true">science</span><strong>Stat labs</strong><small>CBC, LFT, KFT - 45 min TAT</small></button>
+          <button type="button" data-record-open="lab:Imaging"><span class="material-symbols-outlined" aria-hidden="true">radiology</span><strong>Imaging</strong><small>X-ray open - CT queue 2</small></button>
+        </div>
         <form class="hms-form rx-form" data-local-form>
-          <label>Patient / appointment<input type="text" value="MRN-2041 / AP-1011"/></label>
-          <label>Amount<input type="text" value="700"/></label>
-          <label>Paid<input type="text" value="300"/></label>
-          <label>Payment mode<select><option>Cash</option><option>UPI</option><option>Card</option><option>Insurance</option><option>Corporate</option></select></label>
-          <button type="button" class="hms-btn" data-toast="Payment collection updated on screen.">Collect payment</button>
+          <div class="rx-form-grid">
+            <label>Request type<select><option>Ambulance dispatch</option><option>Lab sample pickup</option><option>Report follow-up</option><option>Imaging slot</option></select></label>
+            <label>Patient / token<input type="text" value="ER-03"/></label>
+          </div>
+          <label>Instructions<textarea class="rx-note" rows="3">Emergency trauma case. Keep lab and ambulance desk updated.</textarea></label>
+          <button type="submit" class="hms-btn">Log support request</button>
         </form>
-        <div class="rx-table-wrap">
-          <table class="hms-table rx-table">
-            <thead><tr><th>Patient</th><th>Appointment</th><th>Amount</th><th>Paid</th><th>Due</th><th>Mode</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody>
-            <tr><td>Neha Jain</td><td>AP-1011</td><td>₹700</td><td>₹300</td><td>₹400</td><td>UPI</td><td><span class="rx-badge warning">partial</span></td><td class="rx-actions"><button data-record-open="bill:BILL-7781">View</button><button data-print-section="#billing">Print</button></td></tr>
-            <tr><td>Aarav Khan</td><td>AP-1008</td><td>₹900</td><td>₹900</td><td>₹0</td><td>Card</td><td><span class="rx-badge success">paid</span></td><td class="rx-actions"><button data-record-open="bill:BILL-7779">View</button><button data-print-section="#billing">Reprint</button></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      </article>
     </section>
 
-    <div class="reception-modal" id="new-patient-modal" aria-hidden="true"><div class="reception-modal-card wide" role="dialog" aria-modal="true" aria-labelledby="new-patient-title"><button type="button" class="reception-modal-close" data-modal-close aria-label="Close modal">&times;</button><span class="rx-kicker">Patient intake</span><h2 id="new-patient-title">Register patient at desk</h2><p class="hms-muted">Capture essential details and select the patient for immediate appointment booking.</p><form class="hms-form rx-form rx-form-grid" id="new-patient-form" data-inline-patient-form autocomplete="off"><label>Full name<input type="text" name="fullName" required minlength="3" placeholder="Patient full name"/></label><label>Mobile<input type="tel" name="mobile" pattern="[0-9]{10}" maxlength="10" required placeholder="10 digit mobile"/></label><label>Email<input type="email" name="email" placeholder="patient@example.com"/></label><label>Date of birth<input type="date" name="dob"/></label><label>Gender<select name="gender" required><option value="">Select gender</option><option>Male</option><option>Female</option><option>Other</option></select></label><label>Blood group<select name="bloodGroup"><option value="">Select blood group</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></label><label class="rx-form-wide">Address<input type="text" name="address" placeholder="Current address"/></label><label>Emergency contact<input type="tel" name="emergencyContact" maxlength="10" placeholder="Emergency mobile"/></label><label>Insurance ID<input type="text" name="insuranceId" placeholder="Policy or member ID"/></label><label class="rx-form-wide">Notes<textarea class="rx-note" name="notes" rows="3" placeholder="Desk notes, allergies, referral details"></textarea></label><div class="rx-form-message rx-form-wide" data-inline-patient-message aria-live="polite"></div><div class="rx-action-row rx-form-wide"><button type="submit" class="hms-btn">Register and select</button><button type="button" class="hms-btn hms-btn-ghost" data-modal-close>Cancel</button></div></form></div></div>
-    <div class="reception-modal" id="record-modal" aria-hidden="true"><div class="reception-modal-card" role="dialog" aria-modal="true"><button type="button" class="reception-modal-close" data-modal-close aria-label="Close modal">&times;</button><span class="rx-kicker">Detail view</span><h2 id="record-modal-title">Record details</h2><div class="rx-detail-grid" data-record-modal-body></div><div class="rx-action-row"><button type="button" class="hms-btn hms-btn-ghost" data-modal-close>Close</button><button type="button" class="hms-btn" data-print-section="#record-modal">Print</button></div></div></div>
+    <div class="reception-modal" id="new-patient-modal" aria-hidden="true">
+      <div class="reception-modal-card wide" role="dialog" aria-modal="true" aria-labelledby="new-patient-title">
+        <button type="button" class="reception-modal-close" data-modal-close aria-label="Close modal">&times;</button>
+        <span class="rx-kicker">Complete KYC</span>
+        <h2 id="new-patient-title">Register patient at reception</h2>
+        <form class="hms-form rx-form rx-form-grid" id="new-patient-form" data-inline-patient-form autocomplete="off">
+          <label>Full name<input type="text" name="fullName" required minlength="3" placeholder="Patient full name"/></label>
+          <label>Mobile<input type="tel" name="mobile" pattern="[0-9]{10}" maxlength="10" required placeholder="10 digit mobile"/></label>
+          <label>Email<input type="email" name="email" placeholder="patient@example.com"/></label>
+          <label>Date of birth<input type="date" name="dob"/></label>
+          <label>Gender<select name="gender" required><option value="">Select gender</option><option>Male</option><option>Female</option><option>Other</option></select></label>
+          <label>Blood group<select name="bloodGroup"><option value="">Select blood group</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></label>
+          <label>ID proof type<select name="idType"><option>Aadhaar</option><option>Passport</option><option>Driving licence</option><option>Voter ID</option><option>Other</option></select></label>
+          <label>ID proof number<input type="text" name="idNumber" placeholder="Document number"/></label>
+          <label>Emergency contact<input type="tel" name="emergencyContact" maxlength="10" placeholder="Emergency mobile"/></label>
+          <label>Payer type<select name="payerType"><option>Self pay</option><option>Insurance</option><option>Corporate</option><option>Government scheme</option></select></label>
+          <label class="rx-form-wide">Address<input type="text" name="address" placeholder="Current address"/></label>
+          <label class="rx-form-wide">Allergies and risk notes<textarea class="rx-note" name="notes" rows="3" placeholder="Allergies, medical risk, referral, consent notes"></textarea></label>
+          <div class="rx-form-message rx-form-wide" data-inline-patient-message aria-live="polite"></div>
+          <div class="rx-action-row rx-form-wide">
+            <button type="submit" class="hms-btn">Register and select</button>
+            <button type="button" class="hms-btn hms-btn-ghost" data-modal-close>Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="reception-modal" id="record-modal" aria-hidden="true">
+      <div class="reception-modal-card" role="dialog" aria-modal="true">
+        <button type="button" class="reception-modal-close" data-modal-close aria-label="Close modal">&times;</button>
+        <span class="rx-kicker">Detail view</span>
+        <h2 id="record-modal-title">Record details</h2>
+        <div class="rx-detail-grid" data-record-modal-body></div>
+        <div class="rx-action-row"><button type="button" class="hms-btn hms-btn-ghost" data-modal-close>Close</button><button type="button" class="hms-btn" data-print-section="#record-modal">Print</button></div>
+      </div>
+    </div>
     <div class="reception-modal" id="global-search-modal" aria-hidden="true"><div class="reception-modal-card" role="dialog" aria-modal="true"><button type="button" class="reception-modal-close" data-modal-close aria-label="Close modal">&times;</button><span class="rx-kicker">Global search</span><h2>Search results</h2><div class="rx-table-wrap"><table class="hms-table rx-table"><tbody data-global-search-results></tbody></table></div></div></div>
-    <div class="reception-modal" id="patient-detail-modal" aria-hidden="true"><div class="reception-modal-card wide" role="dialog" aria-modal="true"><button type="button" class="reception-modal-close" data-modal-close aria-label="Close modal">&times;</button><span class="rx-kicker">Patient file</span><h2>MRN-2041 · Neha Jain</h2><div class="rx-detail-grid"><div><small>Profile</small><strong>Female · O+ · +91 98765 22110</strong></div><div><small>Appointments</small><strong>3 visits · next today</strong></div><div><small>Billing</small><strong>₹400 due</strong></div><div><small>Refund</small><strong>1 pending review</strong></div></div><div class="rx-action-row"><button type="button" class="hms-btn" data-scroll-target="#book-appointment" data-modal-close>New appointment</button><button type="button" class="hms-btn hms-btn-ghost" data-scroll-target="#billing" data-modal-close>Collect payment</button><button type="button" class="hms-btn hms-btn-ghost" data-print-section="#patient-detail-modal">Print receipt</button></div></div></div>
-    <div class="reception-modal" id="edit-appointment-modal" aria-hidden="true"><div class="reception-modal-card" role="dialog" aria-modal="true"><button type="button" class="reception-modal-close" data-modal-close aria-label="Close modal">&times;</button><span class="rx-kicker">Edit appointment</span><h2>Modify appointment</h2><form class="hms-form rx-form" data-local-form><label>Doctor<select><option>Dr. Ananya Rao</option><option>Dr. Kabir Mehta</option></select></label><label>Appointment type<select><option>New</option><option>Follow-up</option><option>Emergency</option></select></label><label>Notes<input type="text" value="Patient requested earlier slot"/></label><button type="button" class="hms-btn" data-modal-close data-toast="Appointment updated on screen.">Save changes</button></form></div></div>
     <div class="reception-modal" id="reschedule-modal" aria-hidden="true"><div class="reception-modal-card" role="dialog" aria-modal="true"><button type="button" class="reception-modal-close" data-modal-close aria-label="Close modal">&times;</button><span class="rx-kicker">Reschedule</span><h2>Select new slot</h2><form class="hms-form rx-form" data-local-form><label>New slot<input type="datetime-local"/></label><label>Reason<input type="text" value="Patient requested change"/></label><button type="button" class="hms-btn" data-modal-close data-toast="Appointment rescheduled on screen.">Confirm reschedule</button></form></div></div>
-    <div class="reception-modal" id="cancel-modal" aria-hidden="true"><div class="reception-modal-card" role="dialog" aria-modal="true"><button type="button" class="reception-modal-close" data-modal-close aria-label="Close modal">&times;</button><span class="rx-kicker">Cancel appointment</span><h2>Refund preview</h2><p class="hms-muted">Selected appointment qualifies for 50% refund based on timing.</p><form class="hms-form rx-form" th:action="@{/app/reception/desk/cancel}" method="post"><label>Appointment ID<input type="number" name="appointmentId" required min="1" value="1011"/></label><label>Cancellation reason<select><option>Patient request</option><option>Doctor unavailable</option><option>Payment issue</option></select></label><button type="submit" class="hms-btn">Submit cancellation</button></form></div></div>
+    <div class="reception-modal" id="cancel-modal" aria-hidden="true"><div class="reception-modal-card" role="dialog" aria-modal="true"><button type="button" class="reception-modal-close" data-modal-close aria-label="Close modal">&times;</button><span class="rx-kicker">Cancel appointment</span><h2>Refund preview</h2><p class="hms-muted">Selected appointment qualifies for refund review based on timing and service status.</p><form class="hms-form rx-form" th:action="@{/app/reception/desk/cancel}" method="post"><label>Appointment ID<input type="number" name="appointmentId" required min="1" value="2109"/></label><label>Cancellation reason<select><option>Patient request</option><option>Doctor unavailable</option><option>Payment issue</option><option>Duplicate billing</option></select></label><button type="submit" class="hms-btn">Submit cancellation</button></form></div></div>
     <div class="reception-toast" data-reception-toast aria-live="polite"></div>
 
     <script th:inline="javascript">
@@ -274,7 +338,6 @@
       });
     </script>
     <script>
-      // enable landing (light) theme for the reception page
       document.addEventListener('DOMContentLoaded', function () {
         document.body.classList.add('hms-landing-mode');
       });
