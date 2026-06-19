@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0EA5E9" />
+  <meta name="description" content="Frontend Patient Portal page designed in the HMS landing theme. View prescriptions, lab reports, appointments, payments, and more." />
+  <title>Patient Portal | HMS Care</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/hms.css" />
+  <link rel="stylesheet" href="/css/landing.css" />
+  <link rel="stylesheet" href="/css/patient-portal.css" />
+</head>
+<body class="hms-landing-body patient-portal-body">
+  <header class="hms-landing-header">
+    <div class="hms-landing-header-content">
+      <a href="/" class="hms-landing-brand" aria-label="HMS Care Patient Portal home">
+        <span class="material-symbols-outlined hms-landing-brand-icon">local_hospital</span>
+        <span>HMS Care</span>
+      </a>
+
+      <nav class="hms-landing-nav-desktop" aria-label="Primary navigation">
+        <a href="#portalHero" class="hms-landing-nav-link">Home</a>
+        <a href="#prescriptionsSection" class="hms-landing-nav-link">Prescriptions</a>
+        <a href="#labSection" class="hms-landing-nav-link">Lab Reports</a>
+        <a href="#appointmentSection" class="hms-landing-nav-link">Appointment</a>
+        <a href="#paymentSection" class="hms-landing-nav-link">Payments</a>
+      </nav>
+
+      <div class="hms-landing-nav-actions">
+        <a href="#loginSection" class="hms-landing-btn hms-landing-btn-ghost">Login</a>
+        <a href="/" class="hms-landing-btn hms-landing-btn-primary">Back to Landing</a>
+      </div>
+
+      <button class="hms-landing-hamburger" id="hamburgerBtn" type="button" aria-label="Open menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <nav class="hms-landing-nav-mobile" id="mobileNav" aria-label="Mobile navigation">
+      <a href="#portalHero" class="hms-landing-nav-link">Home</a>
+      <a href="#prescriptionsSection" class="hms-landing-nav-link">Prescriptions</a>
+      <a href="#labSection" class="hms-landing-nav-link">Lab Reports</a>
+      <a href="#appointmentSection" class="hms-landing-nav-link">Appointment</a>
+      <a href="#paymentSection" class="hms-landing-nav-link">Payments</a>
+      <hr />
+      <a href="#loginSection" class="hms-landing-btn hms-landing-btn-ghost">Login</a>
+      <a href="/" class="hms-landing-btn hms-landing-btn-primary">Back to Landing</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hms-landing-hero patient-portal-hero" id="portalHero">
+      <div class="hms-landing-container hms-landing-hero-grid">
+        <div class="patient-portal-hero-copy">
+          <span class="hms-landing-eyebrow">Patient Portal</span>
+          <h1>Everything you need for your care journey, all in one beautiful view.</h1>
+          <p>Access prescriptions department-wise, download lab reports, book appointments, review payments, and manage your patient experience with a landing-page style dashboard.</p>
+          <div class="patient-portal-hero-actions">
+            <button class="hms-landing-btn hms-landing-btn-primary-lg" id="demoLoginBtn">Open Demo Dashboard</button>
+            <a href="#appointmentSection" class="hms-landing-btn hms-landing-btn-secondary-lg">Book Appointment</a>
+          </div>
+        </div>
+
+        <aside class="patient-portal-login-panel" id="loginSection">
+          <div class="patient-portal-card">
+            <div class="portal-card-head">
+              <span class="material-symbols-outlined">login</span>
+              <div>
+                <h2>Patient Login</h2>
+                <p>Frontend-only portal access. No backend required for this demo page.</p>
+              </div>
+            </div>
+            <form id="loginForm" class="patient-portal-form" autocomplete="off">
+              <label>Email address
+                <input type="email" id="loginEmail" placeholder="you@example.com" required />
+              </label>
+              <label>Password
+                <input type="password" id="loginPassword" placeholder="Password" required />
+              </label>
+              <button type="submit" class="hms-landing-btn hms-landing-btn-primary">Login to Portal</button>
+              <button type="button" class="hms-landing-btn hms-landing-btn-ghost" id="quickLoginBtn2">Demo Login</button>
+            </form>
+          </div>
+
+          <div class="patient-portal-card patient-portal-login-info">
+            <h3>Portal Highlights</h3>
+            <ul>
+              <li><span class="material-symbols-outlined">description</span> Department-wise prescriptions</li>
+              <li><span class="material-symbols-outlined">science</span> Download lab reports</li>
+              <li><span class="material-symbols-outlined">event_available</span> Book appointments</li>
+              <li><span class="material-symbols-outlined">payments</span> Payment summaries</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="patient-portal-dashboard hidden" id="dashboardSection">
+      <div class="patient-portal-container">
+        <div class="patient-portal-greeting">
+          <div>
+            <span class="hms-landing-eyebrow">Welcome back</span>
+            <h2 id="welcomeUser">Hello, Patient</h2>
+            <p id="patientIntro">Use this portal to view your care details from a landing-page experience. Everything is organized and easy to navigate.</p>
+          </div>
+          <button type="button" class="hms-landing-btn hms-landing-btn-ghost" id="logoutBtn">Logout</button>
+        </div>
+
+        <div class="patient-portal-stats-grid">
+          <article class="portal-stat">
+            <span class="portal-stat-label">Active departments</span>
+            <strong id="deptCount">0</strong>
+          </article>
+          <article class="portal-stat">
+            <span class="portal-stat-label">Prescriptions</span>
+            <strong id="prescriptionCount">0</strong>
+          </article>
+          <article class="portal-stat">
+            <span class="portal-stat-label">Lab reports</span>
+            <strong id="labCount">0</strong>
+          </article>
+          <article class="portal-stat">
+            <span class="portal-stat-label">Outstanding dues</span>
+            <strong id="dueAmount">₹0</strong>
+          </article>
+        </div>
+
+        <section class="patient-portal-section" id="prescriptionsSection">
+          <div class="patient-portal-section-head">
+            <div>
+              <span class="hms-landing-eyebrow">Prescription Hub</span>
+              <h3>Department-wise prescriptions in one place</h3>
+            </div>
+            <div class="portal-filter-group">
+              <label>Filter by department
+                <select id="deptFilter"></select>
+              </label>
+            </div>
+          </div>
+          <div class="patient-portal-grid" id="prescriptionList"></div>
+        </section>
+
+        <section class="patient-portal-section" id="labSection">
+          <div class="patient-portal-section-head">
+            <div>
+              <span class="hms-landing-eyebrow">Lab Reports</span>
+              <h3>Download your latest reports instantly</h3>
+            </div>
+          </div>
+          <div class="patient-portal-grid" id="labReportList"></div>
+        </section>
+
+        <section class="patient-portal-section" id="appointmentSection">
+          <div class="patient-portal-section-head">
+            <div>
+              <span class="hms-landing-eyebrow">Book Appointment</span>
+              <h3>Reserve a department slot with one click</h3>
+            </div>
+          </div>
+          <div class="patient-portal-summary">
+            <div class="portal-card">
+              <h4>Book a new appointment</h4>
+              <form id="appointmentForm" class="patient-portal-form">
+                <label>Department
+                  <select id="appointmentDepartment" required>
+                    <option value="Cardiology">Cardiology</option>
+                    <option value="Radiology">Radiology</option>
+                    <option value="Neurology">Neurology</option>
+                    <option value="General Medicine">General Medicine</option>
+                  </select>
+                </label>
+                <label>Preferred date & time
+                  <input type="datetime-local" id="appointmentSlot" required />
+                </label>
+                <label>Reason for visit
+                  <textarea id="appointmentReason" placeholder="Describe your symptoms or request"></textarea>
+                </label>
+                <div class="patient-portal-action-row">
+                  <button type="submit" class="hms-landing-btn hms-landing-btn-primary">Confirm Booking</button>
+                </div>
+              </form>
+            </div>
+            <div class="portal-card">
+              <h4>Upcoming Appointments</h4>
+              <div id="appointmentHistory"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="patient-portal-section" id="paymentSection">
+          <div class="patient-portal-section-head">
+            <div>
+              <span class="hms-landing-eyebrow">Payments</span>
+              <h3>Track your charges and manage payments.</h3>
+            </div>
+          </div>
+          <div class="patient-portal-grid" id="paymentSummary"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div id="portalToast" class="portal-toast" aria-live="polite"></div>
+  <script src="/js/patient-portal.js"></script>
+</body>
+</html>

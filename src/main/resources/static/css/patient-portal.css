@@ -1,0 +1,399 @@
+/* Patient Portal landing page styles */
+.patient-portal-body {
+  background: linear-gradient(180deg, #f8fafc 0%, #eef6ff 55%, #ffffff 100%);
+  color: #102a43;
+}
+
+.patient-portal-hero {
+  padding: 3rem 0 2rem;
+}
+
+.patient-portal-hero-copy {
+  max-width: 42rem;
+}
+
+.patient-portal-hero-copy .hms-landing-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0f172a;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 1rem;
+}
+
+.patient-portal-hero-copy h1 {
+  font-size: clamp(2.5rem, 3.5vw, 4.5rem);
+  line-height: 1.02;
+  max-width: 14ch;
+  margin-bottom: 1.25rem;
+}
+
+.patient-portal-hero-copy p {
+  max-width: 42rem;
+  margin-bottom: 1.75rem;
+  color: #475569;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.patient-portal-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.patient-portal-login-panel {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.patient-portal-card {
+  background: #ffffff;
+  border: 1px solid rgba(147, 197, 253, 0.35);
+  border-radius: 24px;
+  box-shadow: 0 28px 68px rgba(15, 23, 42, 0.09);
+  padding: 1.75rem;
+}
+
+.patient-portal-card.patient-portal-login-info {
+  border-color: rgba(167, 243, 208, 0.46);
+}
+
+.portal-card-head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.portal-card-head span.material-symbols-outlined {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0ea5e9, #14b8a6);
+  color: #fff;
+  font-variation-settings: "FILL" 1;
+}
+
+.patient-portal-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.patient-portal-form label {
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.94rem;
+  color: #334155;
+}
+
+.patient-portal-form input,
+.patient-portal-form select,
+.patient-portal-form textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: #f8fafc;
+  color: #0f172a;
+  font: inherit;
+}
+
+.patient-portal-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.patient-portal-login-info ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.patient-portal-login-info li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.9rem;
+  align-items: flex-start;
+  color: #334155;
+}
+
+.patient-portal-login-info li span.material-symbols-outlined {
+  color: #0ea5e9;
+  font-size: 1.5rem;
+  margin-top: 0.15rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.patient-portal-container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.patient-portal-greeting {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.patient-portal-greeting h2 {
+  font-size: clamp(2rem, 2.4vw, 2.75rem);
+  margin-bottom: 0.65rem;
+}
+
+.patient-portal-greeting p {
+  color: #475569;
+  line-height: 1.75;
+}
+
+.patient-portal-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.portal-stat {
+  background: #ffffff;
+  border: 1px solid rgba(219, 234, 254, 0.9);
+  border-radius: 24px;
+  padding: 1.35rem 1.4rem;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+}
+
+.portal-stat-label {
+  display: block;
+  color: #64748b;
+  margin-bottom: 0.75rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.portal-stat strong {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.patient-portal-section {
+  margin-bottom: 2rem;
+}
+
+.patient-portal-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.patient-portal-section-head h3 {
+  margin: 0.25rem 0 0;
+  font-size: 1.55rem;
+}
+
+.portal-filter-group {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.portal-filter-group label {
+  font-size: 0.95rem;
+  color: #475569;
+}
+
+.patient-portal-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.patient-portal-item {
+  background: #ffffff;
+  border-radius: 22px;
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  padding: 1.5rem;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.05);
+}
+
+.patient-portal-item h4 {
+  margin: 0 0 0.75rem;
+}
+
+.patient-portal-item p,
+.patient-portal-item li {
+  color: #475569;
+  line-height: 1.75;
+}
+
+.patient-portal-item ul {
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.patient-portal-item li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.patient-portal-item li span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #0c4a6e;
+  font-size: 1rem;
+}
+
+.portal-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.portal-pill.success {
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+}
+
+.portal-pill.info {
+  background: rgba(59, 130, 246, 0.12);
+  color: #1d4ed8;
+}
+
+.portal-pill.warning {
+  background: rgba(251, 191, 36, 0.16);
+  color: #92400e;
+}
+
+.patient-portal-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.patient-portal-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.patient-portal-summary .portal-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 1.5rem;
+  border: 1px solid rgba(219, 234, 254, 0.95);
+}
+
+.patient-portal-summary strong {
+  display: block;
+  font-size: 1.85rem;
+  margin-top: 0.65rem;
+}
+
+.patient-portal-form-toolbar {
+  display: grid;
+  gap: 1rem;
+}
+
+.portal-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  min-width: 260px;
+  max-width: 320px;
+  padding: 1rem 1.1rem;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.94);
+  color: #ffffff;
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.28);
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 1200;
+}
+
+.portal-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.portal-toast.success {
+  background: linear-gradient(135deg, #10b981, #0f766e);
+}
+
+.portal-toast.error {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+}
+
+@media (max-width: 1024px) {
+  .patient-portal-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .patient-portal-login-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .hms-landing-header-content {
+    flex-wrap: wrap;
+  }
+
+  .patient-portal-greeting {
+    flex-direction: column;
+  }
+
+  .patient-portal-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .hms-landing-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .patient-portal-hero {
+    padding-top: 2rem;
+  }
+
+  .hms-landing-header {
+    padding: 0.75rem 0;
+  }
+
+  .patient-portal-form input,
+  .patient-portal-form select,
+  .patient-portal-form textarea {
+    min-height: 50px;
+  }
+}
