@@ -446,7 +446,7 @@ body.hms-landing-mode {
 
 .rx-workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.72fr);
+  grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.7fr);
   gap: 1rem;
   margin-bottom: 1rem;
 }
@@ -454,11 +454,19 @@ body.hms-landing-mode {
 .rx-panel {
   min-width: 0;
   margin-bottom: 1rem;
-  padding: 1.1rem;
+  padding: 1.15rem;
+  background: #ffffff;
+  border: 1px solid var(--rx-line);
+  border-radius: 20px;
+  box-shadow: var(--md-sys-elevation-1);
 }
 
 .rx-panel-main {
   grid-column: span 1;
+}
+
+.rx-panel .rx-section-head {
+  margin-bottom: 1rem;
 }
 
 .rx-section-head,
