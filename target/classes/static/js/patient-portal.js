@@ -92,15 +92,98 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3200);
   }
 
-  function openDashboard() {
+  async function apiFetch(path, options = {}) {
+    const response = await fetch(path, Object.assign({
+      credentials: 'same-origin',
+      headers: Object.assign({
+        Accept: 'application/json'
+      }, options.headers || {})
+    }, options));
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || 'Server error');
+    }
+    if (response.status === 204) return null;
+    return response.json();
+  }
+
+  function formatMoney(value) {
+    return `₹${Number(value || 0).toLocaleString('en-IN')}`;
+  }
+
+  function formatSlot(value) {
+    try {
+      return new Date(value).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+    } catch (error) {
+      return value || '';
+    }
+  }
+
+  async function loadPatientPortalData() {
+    try {
+      const [appointments, prescriptions, bills, documents] = await Promise.all([
+        apiFetch('/api/patient/appointments'),
+        apiFetch('/api/patient/prescriptions'),
+        apiFetch('/api/patient/bills'),
+        apiFetch('/api/patient/documents')
+      ]);
+
+      if (Array.isArray(appointments) && appointments.length) {
+        state.patient.appointments = appointments.map(appt => ({
+          department: appt.channel || 'Online visit',
+          slot: formatSlot(appt.scheduledAt),
+          status: appt.status || 'Confirmed'
+        }));
+      }
+
+      if (Array.isArray(prescriptions) && prescriptions.length) {
+        state.patient.prescriptions = prescriptions.map(rx => ({
+          department: 'Prescription',
+          title: rx.lines && rx.lines.length ? rx.lines[0].medicine : 'Medication order',
+          date: rx.printedAt ? formatSlot(rx.printedAt) : 'Recent',
+          notes: (rx.lines || []).map(line => `${line.medicine} · ${line.dosage} · ${line.frequency} · ${line.durationDays} days`).join('\n')
+        }));
+      }
+
+      if (Array.isArray(documents) && documents.length) {
+        state.patient.labReports = documents.map(doc => ({
+          title: doc.title || doc.docType || 'Report',
+          department: doc.docType || 'Record',
+          date: '',
+          fileName: doc.uri || doc.title || 'report.pdf'
+        }));
+      }
+
+      if (Array.isArray(bills) && bills.length) {
+        state.patient.payments = bills.map(bill => ({
+          description: bill.referenceType ? bill.referenceType.replace(/_/g, ' ') : `Bill #${bill.billId}`,
+          amount: bill.total,
+          status: bill.status === 'PAID' ? 'Paid' : 'Due'
+        }));
+      }
+
+      const currentDepartments = Array.from(new Set(state.patient.prescriptions.map(p => p.department)));
+      deptCount.textContent = currentDepartments.length;
+      prescriptionCount.textContent = state.patient.prescriptions.length;
+      labCount.textContent = state.patient.labReports.length;
+      dueAmount.textContent = formatMoney(state.patient.payments.filter(item => item.status !== 'Paid').reduce((sum, item) => sum + Number(item.amount || 0), 0));
+      showToast('Live patient portal data loaded.');
+    } catch (error) {
+      console.warn('Patient portal API load failed:', error);
+      showToast('Live patient portal data unavailable, using demo data.', 'warning');
+    }
+  }
+
+  async function openDashboard() {
     loginSection.classList.add('hidden');
     dashboardSection.classList.remove('hidden');
     welcomeUser.textContent = `Hello, ${state.patient.name}`;
     patientIntro.textContent = 'Your patient dashboard makes it easy to manage prescriptions, reports, appointments, and payments.';
-    deptCount.textContent = departments.length;
+    await loadPatientPortalData();
+    deptCount.textContent = Array.from(new Set(state.patient.prescriptions.map(p => p.department))).length;
     prescriptionCount.textContent = state.patient.prescriptions.length;
     labCount.textContent = state.patient.labReports.length;
-    dueAmount.textContent = `₹${state.patient.payments.filter(item => item.status === 'Due').reduce((sum, item) => sum + item.amount, 0)}`;
+    dueAmount.textContent = formatMoney(state.patient.payments.filter(item => item.status === 'Due').reduce((sum, item) => sum + Number(item.amount || 0), 0));
     renderDepartments();
     renderPrescriptions('All');
     renderLabReports();
@@ -114,7 +197,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderDepartments() {
-    deptFilter.innerHTML = '<option value="All">All departments</option>' + departments.map(dept => `<option value="${dept}">${dept}</option>`).join('');
+    const departmentsList = Array.from(new Set(state.patient.prescriptions.map(p => p.department)));
+    deptFilter.innerHTML = '<option value="All">All departments</option>' + departmentsList.map(dept => `<option value="${dept}">${dept}</option>`).join('');
   }
 
   function renderPrescriptions(filter) {
@@ -219,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderPrescriptions(event.target.value);
   });
 
-  appointmentForm.addEventListener('submit', event => {
+  appointmentForm.addEventListener('submit', async event => {
     event.preventDefault();
     const department = document.getElementById('appointmentDepartment').value;
     const slot = document.getElementById('appointmentSlot').value;
@@ -228,15 +312,31 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast('Please choose a date and time.', 'error');
       return;
     }
-
-    state.patient.appointments.push({
-      department,
-      slot: new Date(slot).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
-      status: 'Confirmed'
-    });
-    renderAppointments();
-    showToast('Appointment booked successfully.');
-    appointmentForm.reset();
+    try {
+      const body = {
+        scheduledAtIso: new Date(slot).toISOString(),
+        consultationFee: 0,
+        notes: reason
+      };
+      const result = await apiFetch('/api/patient/appointments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+      state.patient.appointments.push({
+        department,
+        slot: new Date(slot).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
+        status: result.status || 'Confirmed'
+      });
+      renderAppointments();
+      showToast('Appointment booked successfully.');
+      appointmentForm.reset();
+    } catch (error) {
+      console.error('Appointment booking failed:', error);
+      showToast('Appointment booking failed. Please try again.', 'error');
+    }
   });
 
   document.body.addEventListener('click', event => {

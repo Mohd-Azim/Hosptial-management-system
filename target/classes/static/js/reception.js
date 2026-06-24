@@ -18,6 +18,21 @@
     }, 2600);
   }
 
+  async function apiFetch(path, options) {
+    var response = await fetch(path, Object.assign({
+      credentials: 'same-origin',
+      headers: Object.assign({
+        'Accept': 'application/json'
+      }, (options && options.headers) || {})
+    }, options));
+    if (!response.ok) {
+      var errorText = await response.text();
+      throw new Error(errorText || 'Server error');
+    }
+    if (response.status === 204) return null;
+    return response.json();
+  }
+
   function scrollToTarget(selector) {
     var target = document.querySelector(selector);
     if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -720,6 +735,7 @@
     var hiddenInput = document.querySelector('[data-patient-id-input]');
     var source = document.querySelector('[data-patient-source]');
     var debounceTimer;
+    var patientSearchToken = 0;
     var patients = source ? Array.prototype.slice.call(source.options).map(function (option) {
       return {
         id: option.value,
@@ -727,6 +743,32 @@
         search: option.textContent.trim().toLowerCase()
       };
     }).filter(function (patient) { return patient.id; }) : [];
+
+    function normalizePatientRow(patient) {
+      if (patient.userId && patient.fullName) {
+        return {
+          id: patient.userId,
+          label: patient.mrn ? patient.mrn + ' · ' + patient.fullName : patient.fullName,
+          search: (patient.fullName + ' ' + (patient.mrn || '')).toLowerCase()
+        };
+      }
+      return {
+        id: patient.id,
+        label: patient.label || '',
+        search: (patient.label || '').toLowerCase()
+      };
+    }
+
+    async function searchPatientRecords(query) {
+      if (!query) return [];
+      try {
+        var records = await apiFetch('/api/search/patients?q=' + encodeURIComponent(query) + '&limit=8');
+        return records.map(normalizePatientRow);
+      } catch (error) {
+        console.warn('Patient search API failed:', error);
+        return [];
+      }
+    }
 
     function openPatientModal(prefillName) {
       var modal = document.getElementById('new-patient-modal');
@@ -800,10 +842,16 @@
           dropdown.classList.add('is-open');
           dropdown.innerHTML = '<div class="rx-patient-loading"><span class="rx-mini-spinner" aria-hidden="true"></span>Searching patient records</div>';
         }
-        debounceTimer = setTimeout(function () {
-          renderDropdown(patients.filter(function (patient) {
-            return patient.search.indexOf(query) !== -1;
-          }).slice(0, 8));
+        var currentToken = ++patientSearchToken;
+        debounceTimer = setTimeout(async function () {
+          var results = await searchPatientRecords(query);
+          if (currentToken !== patientSearchToken) return;
+          if (!results.length) {
+            results = patients.filter(function (patient) {
+              return patient.search.indexOf(query) !== -1;
+            }).slice(0, 8);
+          }
+          renderDropdown(results.slice(0, 8));
         }, 220);
       });
     }
@@ -837,7 +885,7 @@
 
     var bookingForm = document.querySelector('#book-appointment form');
     if (bookingForm && hiddenInput && patientSearch) {
-      bookingForm.addEventListener('submit', function (event) {
+      bookingForm.addEventListener('submit', async function (event) {
         if (!hiddenInput.value) {
           event.preventDefault();
           patientSearch.focus();
@@ -848,6 +896,42 @@
           event.preventDefault();
           patientSearch.focus();
           showToast('Permanent MRN is required before appointment submission.');
+          return;
+        }
+        event.preventDefault();
+        var bookingChannel = bookingForm.querySelector('[name="bookingChannel"]') ? bookingForm.querySelector('[name="bookingChannel"]').value : 'WALK_IN';
+        var scheduledAt = bookingForm.querySelector('[name="scheduledAtLocal"]') ? bookingForm.querySelector('[name="scheduledAtLocal"]').value : '';
+        var consultationFee = bookingForm.querySelector('[name="consultationFee"]') ? parseFloat(bookingForm.querySelector('[name="consultationFee"]').value) || 0 : 0;
+        var notes = bookingForm.querySelector('[name="notes"]') ? bookingForm.querySelector('[name="notes"]').value : '';
+        if (!scheduledAt) {
+          patientSearch.focus();
+          showToast('Choose a date and time before submitting.');
+          return;
+        }
+        try {
+          var result = await apiFetch('/api/reception/appointments', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              patientUserId: Number(hiddenInput.value),
+              bookingChannel: bookingChannel,
+              scheduledAtIso: new Date(scheduledAt).toISOString(),
+              consultationFee: consultationFee,
+              notes: notes,
+              offlinePaidImmediate: bookingForm.querySelector('[name="offlinePaidImmediate"]') ? bookingForm.querySelector('[name="offlinePaidImmediate"]').checked : false
+            })
+          });
+          showToast('Appointment confirmed. Status: ' + (result.status || 'Booked') + '.');
+          bookingForm.reset();
+          if (dropdown) {
+            dropdown.innerHTML = '';
+            dropdown.classList.remove('is-open');
+          }
+        } catch (error) {
+          console.error('Reception booking failed:', error);
+          showToast('Reception appointment booking failed. Please retry.', 'error');
         }
       });
     }
