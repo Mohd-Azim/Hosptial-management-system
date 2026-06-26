@@ -1,34 +1,24 @@
 body.hms-landing-mode,
 .hms-reception {
-  --rx-primary: #0f766e;
-  --rx-primary-dark: #115e59;
+  --rx-primary: #0ea5e9;
+  --rx-primary-dark: #0369a1;
   --rx-blue: #2563eb;
   --rx-red: #dc2626;
   --rx-amber: #b45309;
-  --rx-green: #15803d;
-  --rx-ink: #111827;
+  --rx-green: #10b981;
+  --rx-ink: #0f172a;
   --rx-muted: #64748b;
-  --rx-line: #d9e2ec;
+  --rx-line: #dbeafe;
   --rx-surface: #ffffff;
-  --rx-soft: #f7fafc;
-  --rx-panel: #eef6f6;
-  --md-sys-color-primary: var(--rx-primary);
-  --md-sys-color-on-primary: #ffffff;
-  --md-sys-color-surface: #f7fafc;
-  --md-sys-color-surface-container-lowest: #ffffff;
-  --md-sys-color-surface-container-low: #f7fafc;
-  --md-sys-color-surface-container: #ffffff;
-  --md-sys-color-surface-container-high: #ffffff;
-  --md-sys-color-on-surface: var(--rx-ink);
-  --md-sys-color-on-surface-variant: var(--rx-muted);
-  --md-sys-color-outline: var(--rx-line);
-  --md-sys-elevation-1: 0 8px 22px rgba(15, 23, 42, 0.06);
-  --md-sys-elevation-2: 0 18px 40px rgba(15, 23, 42, 0.10);
-  --md-sys-elevation-3: 0 28px 70px rgba(15, 23, 42, 0.18);
+  --rx-soft: #f1f9ff;
+  --rx-panel: #e0f2fe;
 }
 
 body.hms-landing-mode {
-  background: #f7fafc;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(125, 211, 252, 0.32), transparent 32rem),
+    radial-gradient(circle at 88% 12%, rgba(187, 247, 208, 0.34), transparent 34rem),
+    linear-gradient(180deg, #ffffff 0%, #f6fbff 42%, #ffffff 100%);
 }
 
 .hms-top {
@@ -40,7 +30,7 @@ body.hms-landing-mode {
   gap: 1rem;
   min-height: 72px;
   padding: 0 1.25rem;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.92);
   border-bottom: 1px solid var(--rx-line);
   box-shadow: var(--md-sys-elevation-1);
   backdrop-filter: blur(14px);
@@ -71,6 +61,15 @@ body.hms-landing-mode {
   color: var(--rx-primary);
 }
 
+.hms-global-search {
+  background: var(--rx-panel);
+  border-color: var(--rx-line);
+}
+
+.hms-global-search input {
+  color: var(--rx-ink);
+}
+
 .hms-module-title {
   padding-left: 0.85rem;
   border-left: 1px solid var(--rx-line);
@@ -84,7 +83,7 @@ body.hms-landing-mode {
   min-height: 42px;
   border: 1px solid var(--rx-line);
   border-radius: 999px;
-  background: var(--rx-soft);
+  background: var(--rx-panel);
   color: var(--rx-ink);
   cursor: pointer;
 }
@@ -103,7 +102,7 @@ body.hms-landing-mode {
   padding: 0.35rem 0.45rem 0.35rem 0.9rem;
   border: 1px solid var(--rx-line);
   border-radius: 999px;
-  background: var(--rx-soft);
+  background: var(--rx-panel);
 }
 
 .hms-global-search input {
@@ -115,6 +114,10 @@ body.hms-landing-mode {
   color: var(--rx-ink);
   font: inherit;
   font-weight: 700;
+}
+
+.hms-global-search input::placeholder {
+  color: var(--rx-muted);
 }
 
 .hms-global-search button,
@@ -145,10 +148,16 @@ body.hms-landing-mode {
 
 .hms-reception .hms-btn-ghost,
 .hms-top .hms-btn-ghost {
-  background: #ffffff;
-  color: var(--rx-ink);
+  background: transparent;
+  color: var(--rx-primary);
   border: 1px solid var(--rx-line);
   box-shadow: none;
+}
+
+.hms-reception .hms-btn-ghost:hover,
+.hms-top .hms-btn-ghost:hover {
+  background: var(--rx-panel);
+  color: var(--rx-primary);
 }
 
 .hms-top-actions {
@@ -175,7 +184,7 @@ body.hms-landing-mode {
   padding: 0.9rem;
   border: 1px solid var(--rx-line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--rx-soft);
   box-shadow: var(--md-sys-elevation-2);
 }
 
@@ -188,7 +197,7 @@ body.hms-landing-mode {
   padding: 0.55rem 0.75rem;
   border: 1px solid var(--rx-line);
   border-radius: 999px;
-  background: var(--rx-soft);
+  background: var(--rx-panel);
   color: var(--rx-ink);
   cursor: pointer;
   font: inherit;
@@ -210,7 +219,7 @@ body.hms-landing-mode {
   width: 292px;
   overflow-y: auto;
   padding: 1rem 0.85rem;
-  background: #ffffff;
+  background: var(--rx-surface);
   border-right: 1px solid var(--rx-line);
 }
 
@@ -223,7 +232,7 @@ body.hms-landing-mode {
   padding: 0.75rem 0.85rem;
   border: 1px solid var(--rx-line);
   border-radius: 8px;
-  background: var(--rx-soft);
+  background: var(--rx-panel);
   color: var(--rx-ink);
 }
 
@@ -253,7 +262,7 @@ body.hms-landing-mode {
 .hms-nav a:hover,
 .hms-nav a.is-reception-active {
   border-color: var(--rx-line);
-  background: var(--rx-soft);
+  background: var(--rx-panel);
   color: var(--rx-ink);
   text-decoration: none;
 }
@@ -296,7 +305,7 @@ body.hms-landing-mode {
 .rx-metrics article {
   border: 1px solid var(--rx-line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--rx-soft);
   box-shadow: var(--md-sys-elevation-1);
 }
 
@@ -306,7 +315,7 @@ body.hms-landing-mode {
   justify-content: space-between;
   gap: 1rem;
   padding: 1.25rem;
-  background: linear-gradient(135deg, #ffffff 0%, #eef6f6 100%);
+  background: linear-gradient(135deg, var(--rx-soft) 0%, var(--rx-panel) 100%);
 }
 
 .rx-command-head h1,
@@ -336,9 +345,9 @@ body.hms-landing-mode {
   align-content: center;
   gap: 0.2rem;
   padding: 1rem;
-  border: 1px solid rgba(15, 118, 110, 0.18);
+  border: 1px solid var(--rx-line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--rx-panel);
 }
 
 .rx-shift-card span,
@@ -349,7 +358,7 @@ body.hms-landing-mode {
 }
 
 .rx-shift-card strong {
-  color: var(--rx-primary-dark);
+  color: var(--rx-primary);
   font-size: 1.2rem;
 }
 
@@ -358,7 +367,7 @@ body.hms-landing-mode {
   align-items: center;
   gap: 0.4rem;
   width: fit-content;
-  color: var(--rx-primary-dark);
+  color: var(--rx-primary);
   font-size: 0.74rem;
   font-weight: 900;
   letter-spacing: 0.06em;
@@ -400,7 +409,7 @@ body.hms-landing-mode {
 .rx-subnav a:hover,
 .rx-subnav a.active {
   background: var(--rx-panel);
-  color: var(--rx-primary-dark);
+  color: var(--rx-primary);
   text-decoration: none;
 }
 
@@ -431,7 +440,7 @@ body.hms-landing-mode {
   justify-content: center;
   border-radius: 8px;
   background: var(--rx-panel);
-  color: var(--rx-primary-dark);
+  color: var(--rx-primary);
 }
 
 .rx-metrics strong {
@@ -455,7 +464,7 @@ body.hms-landing-mode {
   min-width: 0;
   margin-bottom: 1rem;
   padding: 1.15rem;
-  background: #ffffff;
+  background: var(--rx-soft);
   border: 1px solid var(--rx-line);
   border-radius: 20px;
   box-shadow: var(--md-sys-elevation-1);
@@ -533,7 +542,7 @@ body.hms-landing-mode {
   min-height: 44px;
   border: 1px solid var(--rx-line);
   border-radius: 6px;
-  background: #ffffff;
+  background: var(--rx-panel);
   color: var(--rx-ink);
   font: inherit;
   font-weight: 600;
@@ -542,13 +551,19 @@ body.hms-landing-mode {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
+.rx-input::placeholder,
+.rx-form input::placeholder,
+.rx-form textarea::placeholder {
+  color: var(--rx-muted);
+}
+
 .rx-input:focus,
 .rx-form input:focus,
 .rx-form select:focus,
 .rx-form textarea:focus,
 .rx-filter-row select:focus {
   border-color: var(--rx-primary);
-  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.14);
 }
 
 .rx-note {
@@ -598,7 +613,7 @@ body.hms-landing-mode {
   padding: 0.25rem;
   border: 1px solid var(--rx-line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--rx-soft);
   box-shadow: var(--md-sys-elevation-2);
 }
 
@@ -622,7 +637,7 @@ body.hms-landing-mode {
 
 .rx-patient-hit:hover,
 .rx-patient-hit:focus {
-  background: var(--rx-soft);
+  background: var(--rx-panel);
   outline: none;
 }
 
@@ -642,7 +657,7 @@ body.hms-landing-mode {
 .rx-mini-spinner {
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(15, 118, 110, 0.18);
+  border: 2px solid rgba(14, 165, 233, 0.18);
   border-top-color: var(--rx-primary);
   border-radius: 999px;
   animation: rx-spin 0.75s linear infinite;
@@ -656,7 +671,7 @@ body.hms-landing-mode {
 .rx-lookup-card {
   border: 1px solid var(--rx-line);
   border-radius: 8px;
-  background: var(--rx-soft);
+  background: var(--rx-panel);
   padding: 0.9rem;
 }
 
@@ -690,7 +705,15 @@ body.hms-landing-mode {
   height: 8px;
   overflow: hidden;
   border-radius: 999px;
-  background: #e2e8f0;
+  background: var(--rx-line);
+}
+
+.rx-progress span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--rx-primary) 0%, rgba(16, 185, 129, 0.7) 100%);
+  border-radius: 999px;
+  transition: width 0.3s ease;
 }
 
 .rx-progress span {
@@ -766,15 +789,19 @@ body.hms-landing-mode {
   overflow: hidden;
   border: 1px solid var(--rx-line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--rx-soft);
 }
 
 .rx-table.hms-table th {
-  background: #f1f5f9;
+  background: var(--rx-panel);
   color: var(--rx-muted);
   font-weight: 900;
   cursor: pointer;
   white-space: nowrap;
+}
+
+.rx-table.hms-table tbody tr:hover {
+  background: rgba(14, 165, 233, 0.08);
 }
 
 .rx-table.hms-table td {
@@ -793,7 +820,7 @@ body.hms-landing-mode {
 .rx-refund-policy button {
   border: 1px solid var(--rx-line);
   border-radius: 999px;
-  background: #ffffff;
+  background: var(--rx-panel);
   color: var(--rx-ink);
   cursor: pointer;
   font: inherit;
@@ -805,7 +832,7 @@ body.hms-landing-mode {
 .rx-actions button:hover,
 .rx-pagination button:hover,
 .rx-refund-policy button:hover {
-  background: var(--rx-panel);
+  background: var(--rx-soft);
 }
 
 .rx-pagination {
@@ -860,7 +887,7 @@ body.hms-landing-mode {
 
 .rx-support-grid .material-symbols-outlined {
   grid-row: span 2;
-  color: var(--rx-primary-dark);
+  color: var(--rx-primary);
 }
 
 .rx-refund-policy {
@@ -879,7 +906,7 @@ body.hms-landing-mode {
   margin: 0.35rem;
   border: 1px solid var(--rx-line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--rx-soft);
 }
 
 .calendar-mode table td {
@@ -895,7 +922,7 @@ body.hms-landing-mode {
   display: none;
   place-items: center;
   padding: 1rem;
-  background: rgba(15, 23, 42, 0.42);
+  background: rgba(15, 23, 42, 0.38);
   backdrop-filter: blur(10px);
 }
 
@@ -910,7 +937,7 @@ body.hms-landing-mode {
   overflow-y: auto;
   border: 1px solid var(--rx-line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--rx-soft);
   box-shadow: var(--md-sys-elevation-3);
   padding: 1.25rem;
 }
@@ -927,10 +954,14 @@ body.hms-landing-mode {
   height: 40px;
   border: 1px solid var(--rx-line);
   border-radius: 999px;
-  background: #ffffff;
+  background: var(--rx-panel);
   color: var(--rx-ink);
   cursor: pointer;
   font-size: 1.5rem;
+}
+
+.reception-modal-close:hover {
+  background: var(--rx-soft);
 }
 
 .reception-toast {

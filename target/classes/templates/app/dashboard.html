@@ -2,64 +2,250 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
 <head>
   <title>Dashboard</title>
+  <style>
+    .dashboard-hero {
+      margin: -1.5rem -1.5rem 2rem;
+      padding: 2rem 1.5rem;
+      background: linear-gradient(135deg, #f1f9ff 0%, #e0f2fe 100%);
+      border-bottom: 1px solid #dbeafe;
+    }
+
+    .dashboard-hero h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.75rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: #0f172a;
+    }
+
+    .dashboard-hero p {
+      margin: 0;
+      font-size: 0.9375rem;
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin: 2rem 0;
+    }
+
+    .dashboard-tile {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 140px;
+      padding: 1.5rem;
+      border: 1px solid #dbeafe;
+      border-radius: 16px;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.08);
+      text-decoration: none !important;
+      color: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .dashboard-tile:hover {
+      background: #f8fafc;
+      box-shadow: 0 12px 28px rgba(14, 165, 233, 0.16);
+      border-color: #0ea5e9;
+      transform: translateY(-2px);
+    }
+
+    .dashboard-tile h2 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #0f172a;
+      letter-spacing: 0.005em;
+    }
+
+    .dashboard-tile p {
+      margin: 0;
+      font-size: 0.875rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    .dashboard-alert {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 12px;
+      background: rgba(239, 68, 68, 0.08);
+      color: #7f1d1d;
+      font-size: 0.9375rem;
+    }
+
+    .dashboard-footer {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #dbeafe;
+      color: #64748b;
+      font-size: 0.875rem;
+    }
+
+    .dashboard-footer code {
+      background: rgba(14, 165, 233, 0.08);
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      color: #0369a1;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+
+      .dashboard-hero {
+        margin: -1rem -1rem 1.5rem;
+        padding: 1.5rem 1rem;
+      }
+
+      .dashboard-tile {
+        min-height: 120px;
+        padding: 1.25rem;
+      }
+
+      .dashboard-tile h2 {
+        font-size: 1rem;
+      }
+
+      .dashboard-tile p {
+        font-size: 0.8125rem;
+      }
+
+      .dashboard-hero h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 0.875rem;
+      }
+
+      .dashboard-hero {
+        margin: -1rem -1rem 1rem;
+        padding: 1rem;
+      }
+
+      .dashboard-hero h1 {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .dashboard-hero p {
+        font-size: 0.875rem;
+      }
+    }
+  </style>
 </head>
 <body>
 <section layout:fragment="content">
-  <div class="hms-card">
+  <div class="dashboard-hero">
     <h1>Dashboard</h1>
-    <p class="hms-muted">Choose a module from the sidebar. Session-based access aligns with your roles.</p>
-    <div class="hms-alert" th:if="${param.error != null}" th:text="'You do not have access to that page.'"></div>
-    <div class="hms-grid">
-      <a th:href="@{/app/patient/home}" class="hms-tile" style="text-decoration:none;" th:if="${navPatient}">
+    <p>Choose a module from the sidebar. Session-based access aligns with your roles.</p>
+  </div>
+
+  <div th:if="${param.error != null}" class="dashboard-alert">
+    You do not have access to that page.
+  </div>
+
+  <div class="dashboard-grid">
+    <a th:href="@{/app/patient/home}" class="dashboard-tile" th:if="${navPatient}">
+      <div>
         <h2>Patient portal</h2>
         <p>Appointments, prescriptions, bills</p>
-      </a>
-      <a th:href="@{/app/reception/desk}" class="hms-tile" style="text-decoration:none;" th:if="${navReception}">
+      </div>
+    </a>
+
+    <a th:href="@{/app/reception/desk}" class="dashboard-tile" th:if="${navReception}">
+      <div>
         <h2>Reception</h2>
         <p>Front desk &amp; patient lookup</p>
-      </a>
-      <a th:href="@{/app/clinical/today}" class="hms-tile" style="text-decoration:none;" th:if="${navClinical}">
+      </div>
+    </a>
+
+    <a th:href="@{/app/clinical/today}" class="dashboard-tile" th:if="${navClinical}">
+      <div>
         <h2>Clinical</h2>
-        <p>Today’s schedule</p>
-      </a>
-      <a th:href="@{/app/pharmacy/pending}" class="hms-tile" style="text-decoration:none;" th:if="${navPharmacy}">
+        <p>Today's schedule</p>
+      </div>
+    </a>
+
+    <a th:href="@{/app/pharmacy/pending}" class="dashboard-tile" th:if="${navPharmacy}">
+      <div>
         <h2>Pharmacy</h2>
         <p>Pending fulfilments</p>
-      </a>
-      <a th:href="@{/app/facility/wards}" class="hms-tile" style="text-decoration:none;" th:if="${navFacility}">
+      </div>
+    </a>
+
+    <a th:href="@{/app/facility/wards}" class="dashboard-tile" th:if="${navFacility}">
+      <div>
         <h2>Facility</h2>
         <p>Wards &amp; beds</p>
-      </a>
-      <a th:href="@{/app/hr/me}" class="hms-tile" style="text-decoration:none;" th:if="${navHrStaff}">
+      </div>
+    </a>
+
+    <a th:href="@{/app/hr/me}" class="dashboard-tile" th:if="${navHrStaff}">
+      <div>
         <h2>Attendance</h2>
         <p>Your clock-in / clock-out</p>
-      </a>
-      <a th:href="@{/app/hr/roster}" class="hms-tile" style="text-decoration:none;" th:if="${navHr}">
+      </div>
+    </a>
+
+    <a th:href="@{/app/hr/roster}" class="dashboard-tile" th:if="${navHr}">
+      <div>
         <h2>HR roster</h2>
         <p>Daily attendance overview</p>
-      </a>
-      <a th:href="@{/app/hr/payroll}" class="hms-tile" style="text-decoration:none;" th:if="${navHr}">
+      </div>
+    </a>
+
+    <a th:href="@{/app/hr/payroll}" class="dashboard-tile" th:if="${navHr}">
+      <div>
         <h2>Payroll</h2>
         <p>Components &amp; runs</p>
-      </a>
-      <a th:href="@{/app/procurement/vendors}" class="hms-tile" style="text-decoration:none;" th:if="${navProcurement}">
+      </div>
+    </a>
+
+    <a th:href="@{/app/procurement/vendors}" class="dashboard-tile" th:if="${navProcurement}">
+      <div>
         <h2>Procurement</h2>
         <p>Suppliers &amp; vendors</p>
-      </a>
-      <a th:href="@{/app/finance/misc}" class="hms-tile" style="text-decoration:none;" th:if="${navFinance}">
+      </div>
+    </a>
+
+    <a th:href="@{/app/finance/misc}" class="dashboard-tile" th:if="${navFinance}">
+      <div>
         <h2>Misc expenses</h2>
         <p>Ad-hoc hospital spends</p>
-      </a>
-      <a th:href="@{/app/compliance/waste}" class="hms-tile" style="text-decoration:none;" th:if="${navCompliance}">
+      </div>
+    </a>
+
+    <a th:href="@{/app/compliance/waste}" class="dashboard-tile" th:if="${navCompliance}">
+      <div>
         <h2>Waste</h2>
         <p>BMW logs</p>
-      </a>
-      <a th:href="@{/app/admin/users}" class="hms-tile" style="text-decoration:none;" th:if="${navAdmin}">
+      </div>
+    </a>
+
+    <a th:href="@{/app/admin/users}" class="dashboard-tile" th:if="${navAdmin}">
+      <div>
         <h2>Admin</h2>
         <p>Users &amp; access</p>
-      </a>
-    </div>
-    <p class="hms-muted" style="margin-top:1.5rem;">REST JSON APIs remain under <code>/api/**</code> for integrations.</p>
+      </div>
+    </a>
+  </div>
+
+  <div class="dashboard-footer">
+    REST JSON APIs remain under <code>/api/**</code> for integrations.
   </div>
 </section>
 </body>

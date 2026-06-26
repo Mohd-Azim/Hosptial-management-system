@@ -1,39 +1,54 @@
 /*
- * HMS — Material Design 3 inspired theme (dark).
+ * HMS - Material Design 3 inspired light theme.
  * Tokens mirror md-sys-color-* semantics for maintainability.
  */
 :root {
+  --landing-primary: #0ea5e9;
+  --landing-primary-deep: #0369a1;
+  --landing-primary-soft: #e0f2fe;
+  --landing-trust-blue: #075985;
+  --landing-green: #10b981;
+  --landing-green-soft: #dcfce7;
+  --landing-cream: #f8fafc;
+  --landing-surface: #ffffff;
+  --landing-surface-alt: #f1f9ff;
+  --landing-text: #0f172a;
+  --landing-muted: #64748b;
+  --landing-border: #dbeafe;
+  --landing-shadow: 0 24px 70px rgba(14, 116, 144, 0.14);
+  --landing-shadow-soft: 0 16px 45px rgba(2, 132, 199, 0.12);
+
   /* Primary */
-  --md-sys-color-primary: #d0bcff;
-  --md-sys-color-on-primary: #381e72;
-  --md-sys-color-primary-container: #4f378b;
-  --md-sys-color-on-primary-container: #eaddff;
+  --md-sys-color-primary: var(--landing-primary);
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: var(--landing-primary-soft);
+  --md-sys-color-on-primary-container: var(--landing-trust-blue);
 
   /* Secondary */
-  --md-sys-color-secondary: #ccc2dc;
-  --md-sys-color-secondary-container: #4a4458;
-  --md-sys-color-on-secondary-container: #e8def8;
+  --md-sys-color-secondary: var(--landing-green);
+  --md-sys-color-secondary-container: var(--landing-green-soft);
+  --md-sys-color-on-secondary-container: #065f46;
 
   /* Surface */
-  --md-sys-color-surface: #141218;
-  --md-sys-color-surface-container-lowest: #0f0d13;
-  --md-sys-color-surface-container-low: #1d1b20;
-  --md-sys-color-surface-container: #211f26;
-  --md-sys-color-surface-container-high: #2b2930;
-  --md-sys-color-surface-container-highest: #36343b;
+  --md-sys-color-surface: var(--landing-cream);
+  --md-sys-color-surface-container-lowest: var(--landing-surface);
+  --md-sys-color-surface-container-low: var(--landing-surface-alt);
+  --md-sys-color-surface-container: var(--landing-surface);
+  --md-sys-color-surface-container-high: var(--landing-surface);
+  --md-sys-color-surface-container-highest: var(--landing-surface-alt);
 
-  --md-sys-color-on-surface: #e6e0e9;
-  --md-sys-color-on-surface-variant: #cac4d0;
+  --md-sys-color-on-surface: var(--landing-text);
+  --md-sys-color-on-surface-variant: var(--landing-muted);
 
-  --md-sys-color-outline: #948f99;
-  --md-sys-color-outline-variant: #49454f;
+  --md-sys-color-outline: var(--landing-border);
+  --md-sys-color-outline-variant: #bfdbfe;
 
-  --md-sys-color-error: #f2b8b5;
-  --md-sys-color-error-container: #633b37;
+  --md-sys-color-error: #dc2626;
+  --md-sys-color-error-container: #fee2e2;
 
-  --md-sys-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 3px 1px rgba(0, 0, 0, 0.22);
-  --md-sys-elevation-2: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 6px 2px rgba(0, 0, 0, 0.22);
-  --md-sys-elevation-3: 0 4px 8px 3px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.28);
+  --md-sys-elevation-1: 0 8px 22px rgba(14, 116, 144, 0.08);
+  --md-sys-elevation-2: 0 16px 45px rgba(2, 132, 199, 0.12);
+  --md-sys-elevation-3: 0 24px 70px rgba(14, 116, 144, 0.14);
 
   --md-sys-shape-corner-extra-small: 4px;
   --md-sys-shape-corner-small: 8px;
@@ -64,8 +79,10 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(ellipse 120% 80% at 50% -20%, rgba(79, 55, 139, 0.35), transparent 55%),
-    var(--md-sys-color-surface);
+  background:
+    radial-gradient(circle at 12% 8%, rgba(125, 211, 252, 0.32), transparent 32rem),
+    radial-gradient(circle at 88% 12%, rgba(187, 247, 208, 0.34), transparent 34rem),
+    linear-gradient(180deg, #ffffff 0%, #f6fbff 42%, #ffffff 100%);
   color: var(--md-sys-color-on-surface);
   font-family: var(--font);
   font-size: 14px;
@@ -92,11 +109,12 @@ a:hover {
   justify-content: space-between;
   min-height: 64px;
   padding: 0 1.25rem 0 1rem;
-  background: var(--md-sys-color-surface-container);
+  background: rgba(255, 255, 255, 0.92);
   box-shadow: var(--md-sys-elevation-2);
   gap: 1rem;
   flex-wrap: wrap;
-  border-bottom: 1px solid rgba(148, 143, 153, 0.12);
+  border-bottom: 1px solid rgba(219, 234, 254, 0.76);
+  backdrop-filter: blur(18px);
 }
 
 .hms-brand {
@@ -136,7 +154,7 @@ a:hover {
   height: 1.35rem;
   padding: 0 0.4rem;
   background: var(--md-sys-color-error-container);
-  color: var(--md-sys-color-error);
+  color: #991b1b;
   border-radius: var(--md-sys-shape-corner-full);
   font-size: 0.75rem;
   font-weight: 500;
@@ -158,8 +176,9 @@ a:hover {
 
 .hms-nav {
   padding: 0.75rem;
-  border-right: 1px solid rgba(148, 143, 153, 0.12);
-  background: var(--md-sys-color-surface-container-low);
+  border-right: 1px solid rgba(219, 234, 254, 0.76);
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(18px);
 }
 
 @media (max-width: 900px) {

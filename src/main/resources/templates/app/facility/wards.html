@@ -1,19 +1,241 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
-<head><title>Wards</title></head>
+<head>
+  <title>Facility - Wards</title>
+  <style>
+    .facility-header {
+      margin: -1.5rem -1.5rem 2rem;
+      padding: 2rem 1.5rem;
+      background: linear-gradient(135deg, #f1f9ff 0%, #e0f2fe 100%);
+      border-bottom: 1px solid #dbeafe;
+    }
+
+    .facility-header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.75rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: #0f172a;
+    }
+
+    .facility-header p {
+      margin: 0;
+      font-size: 0.9375rem;
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    .facility-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .facility-stat-card {
+      padding: 1.25rem;
+      border: 1px solid #dbeafe;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.08);
+    }
+
+    .facility-stat-card strong {
+      display: block;
+      font-size: 1.75rem;
+      color: #0ea5e9;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .facility-stat-card small {
+      display: block;
+      font-size: 0.8125rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .facility-content {
+      margin-top: 2rem;
+    }
+
+    .facility-content h2 {
+      margin: 0 0 1rem 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .facility-table-wrap {
+      border: 1px solid #dbeafe;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.08);
+    }
+
+    .facility-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9375rem;
+    }
+
+    .facility-table th {
+      padding: 1rem;
+      background: #f8fafc;
+      border-bottom: 1px solid #dbeafe;
+      color: #0f172a;
+      font-weight: 600;
+      text-align: left;
+      letter-spacing: 0.02em;
+    }
+
+    .facility-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      color: #0f172a;
+      vertical-align: middle;
+    }
+
+    .facility-table tbody tr:hover {
+      background: #f1f9ff;
+    }
+
+    .facility-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .ward-badge {
+      display: inline-block;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .no-data-message {
+      padding: 2rem;
+      text-align: center;
+      color: #64748b;
+      border: 1px dashed #dbeafe;
+      border-radius: 12px;
+      margin-top: 1rem;
+    }
+
+    .no-data-message .material-symbols-outlined {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+      color: #64748b;
+    }
+
+    @media (max-width: 768px) {
+      .facility-header {
+        margin: -1rem -1rem 1.5rem;
+        padding: 1.5rem 1rem;
+      }
+
+      .facility-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .facility-stats {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.875rem;
+      }
+
+      .facility-table {
+        font-size: 0.875rem;
+      }
+
+      .facility-table th,
+      .facility-table td {
+        padding: 0.75rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .facility-header {
+        margin: -1rem -1rem 1rem;
+        padding: 1rem;
+      }
+
+      .facility-header h1 {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .facility-header p {
+        font-size: 0.875rem;
+      }
+
+      .facility-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .facility-table {
+        font-size: 0.8125rem;
+      }
+
+      .facility-table th,
+      .facility-table td {
+        padding: 0.65rem;
+      }
+    }
+  </style>
+</head>
 <body>
 <section layout:fragment="content">
-  <div class="hms-card">
-    <h1>Wards</h1>
-    <table class="hms-table" th:if="${!wards.isEmpty()}">
-      <thead><tr><th>Name</th><th>Bed type</th></tr></thead>
-      <tbody>
-      <tr th:each="w : ${wards}">
-        <td th:text="${w.name}">—</td>
-        <td th:text="${w.bedType}">—</td>
-      </tr>
-      </tbody>
-    </table>
+  <div class="facility-header">
+    <h1>Facility Management</h1>
+    <p>View and manage hospital wards and bed availability</p>
+  </div>
+
+  <div class="facility-stats" th:if="${!wards.isEmpty()}">
+    <div class="facility-stat-card">
+      <strong th:text="${wards.size()}">0</strong>
+      <small>Total Wards</small>
+    </div>
+    <div class="facility-stat-card">
+      <strong th:text="${wards.size() * 20}">0</strong>
+      <small>Total Beds (Est.)</small>
+    </div>
+  </div>
+
+  <div class="facility-content">
+    <h2><span class="material-symbols-outlined" style="vertical-align: middle; margin-right: 0.5rem;">hotel</span>Wards List</h2>
+
+    <div class="facility-table-wrap" th:if="${!wards.isEmpty()}">
+      <table class="facility-table">
+        <thead>
+          <tr>
+            <th>Ward Name</th>
+            <th>Bed Type</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="w : ${wards}">
+            <td>
+              <strong th:text="${w.name}">—</strong>
+            </td>
+            <td>
+              <span class="ward-badge" th:text="${w.bedType}">—</span>
+            </td>
+            <td style="color: #10b981; font-weight: 500;">Active</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="no-data-message" th:if="${wards.isEmpty()}">
+      <span class="material-symbols-outlined">inventory_2</span>
+      <p><strong>No wards available</strong></p>
+      <p>Contact your administrator to set up ward data.</p>
+    </div>
   </div>
 </section>
 </body>

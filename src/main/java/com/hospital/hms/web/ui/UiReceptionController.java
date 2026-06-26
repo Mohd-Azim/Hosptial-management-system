@@ -7,6 +7,7 @@ import com.hospital.hms.domain.enums.RoleCode;
 import com.hospital.hms.repo.PatientProfileRepository;
 import com.hospital.hms.repo.UserRepository;
 import com.hospital.hms.service.AppointmentService;
+import com.hospital.hms.service.HrService;
 import com.hospital.hms.support.HmsConstants;
 import com.hospital.hms.support.HmsWebTime;
 import com.hospital.hms.web.error.ApiException;
@@ -28,14 +29,17 @@ public class UiReceptionController {
     private final PatientProfileRepository patientProfileRepository;
     private final UserRepository userRepository;
     private final AppointmentService appointmentService;
+    private final HrService hrService;
 
     public UiReceptionController(
             PatientProfileRepository patientProfileRepository,
             UserRepository userRepository,
-            AppointmentService appointmentService) {
+            AppointmentService appointmentService,
+            HrService hrService) {
         this.patientProfileRepository = patientProfileRepository;
         this.userRepository = userRepository;
         this.appointmentService = appointmentService;
+        this.hrService = hrService;
     }
 
     @GetMapping("/desk")
@@ -83,5 +87,13 @@ public class UiReceptionController {
             ra.addFlashAttribute("flashError", e.getMessage());
         }
         return "redirect:/app/reception/desk";
+    }
+
+    @GetMapping("/attendance")
+    public String attendance(
+            @RequestAttribute(HmsConstants.REQUEST_USER) UserPrincipal principal,
+            Model model) {
+        model.addAttribute("logs", hrService.myAttendance(principal));
+        return "app/reception/attendance";
     }
 }

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head>
+  <title>Reception Attendance</title>
+  <style>
+    .attendance-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin: -1.5rem -1.75rem 1.5rem;
+      padding: 1.75rem;
+      border-bottom: 1px solid #dbeafe;
+      background: linear-gradient(135deg, #f1f9ff 0%, #e0f2fe 100%);
+      flex-wrap: wrap;
+    }
+
+    .attendance-header h1 {
+      margin: 0 0 0.4rem;
+      color: #0f172a;
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .attendance-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      padding: 1.15rem;
+      border: 1px solid #dbeafe;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.08);
+      text-align: center;
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 1.5rem;
+      color: #0ea5e9;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-card small {
+      display: block;
+      font-size: 0.8125rem;
+      color: #64748b;
+    }
+
+    .hms-table {
+      margin-top: 1rem;
+      overflow: hidden;
+      border: 1px solid #dbeafe;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.08);
+    }
+
+    .hms-table th {
+      background: #f8fafc;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    .hms-table td {
+      color: #0f172a;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .status-present {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+    }
+
+    .status-absent {
+      background: rgba(220, 38, 38, 0.1);
+      color: #dc2626;
+    }
+
+    .status-half {
+      background: rgba(180, 83, 9, 0.1);
+      color: #b45309;
+    }
+
+    .no-data-message {
+      padding: 2rem;
+      text-align: center;
+      color: #64748b;
+      border: 1px dashed #dbeafe;
+      border-radius: 12px;
+      margin-top: 1rem;
+      background: #ffffff;
+    }
+
+    @media (max-width: 768px) {
+      .attendance-header {
+        margin: -1.5rem -1.75rem 1.25rem;
+        padding: 1.25rem;
+      }
+
+      .attendance-header h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<section layout:fragment="content">
+  <div class="hms-card">
+    <div class="attendance-header">
+      <div>
+        <h1>Attendance</h1>
+        <p class="hms-muted">Your clock-in and clock-out history</p>
+      </div>
+      <a href="/app/reception/desk" class="hms-btn hms-btn-ghost" style="text-decoration: none;">
+        <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+        Back to desk
+      </a>
+    </div>
+
+    <div class="attendance-stats" th:if="${!logs.isEmpty()}">
+      <div class="stat-card">
+        <strong th:text="${logs.size()}">0</strong>
+        <small>Total days logged</small>
+      </div>
+      <div class="stat-card">
+        <strong th:text="${#lists.size(logs.?[dayStatus.name() == 'PRESENT'])}">0</strong>
+        <small>Present</small>
+      </div>
+      <div class="stat-card">
+        <strong th:text="${#lists.size(logs.?[dayStatus.name() == 'ABSENT'])}">0</strong>
+        <small>Absent</small>
+      </div>
+      <div class="stat-card">
+        <strong th:text="${#lists.size(logs.?[dayStatus.name() == 'HALF_DAY'])}">0</strong>
+        <small>Half day</small>
+      </div>
+    </div>
+
+    <table class="hms-table" th:if="${!logs.isEmpty()}">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Clock-in</th>
+          <th>Clock-out</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="l : ${logs}">
+          <td th:text="${#temporals.format(l.logDate, 'dd MMM yyyy')}">—</td>
+          <td th:text="${l.checkIn != null ? #temporals.format(l.checkIn, 'HH:mm:ss') : '—'}">—</td>
+          <td th:text="${l.checkOut != null ? #temporals.format(l.checkOut, 'HH:mm:ss') : '—'}">—</td>
+          <td>
+            <span class="status-badge" th:classappend="'status-' + ${l.dayStatus.name().toLowerCase()}">
+              <span th:text="${l.dayStatus.name().replace('_', ' ')}">PRESENT</span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="no-data-message" th:if="${logs.isEmpty()}">
+      <span class="material-symbols-outlined" style="font-size: 3rem; display: block; margin-bottom: 1rem; opacity: 0.5;">calendar_blank</span>
+      <p><strong>No attendance records yet</strong></p>
+      <p>Start tracking by using the clock-in/clock-out feature via the REST API.</p>
+    </div>
+  </div>
+</section>
+</body>
+</html>
